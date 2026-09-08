@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historical Character RAG Lab</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">HYBRID RAG · ONE GEMINI CALL</p>
+        <h1>Historical Character Lab</h1>
+      </div>
+      <a href="/docs" target="_blank">OpenAPI ↗</a>
+    </header>
+
+    <section class="controls">
+      <label>Nhân vật<select id="character"></select></label>
+      <label>Session ID<input id="session" value="demo-session-001"></label>
+      <label>API key<input id="api-key" type="password" placeholder="Chỉ cần khi auth bật"></label>
+      <button id="save-key" type="button">Lưu key trong tab</button>
+    </section>
+
+    <section id="messages" class="messages" aria-live="polite"></section>
+
+    <form id="chat-form">
+      <textarea id="message" maxlength="2000" placeholder="Nhập câu hỏi…" required></textarea>
+      <div class="actions">
+        <label class="debug"><input id="debug" type="checkbox" checked> Debug</label>
+        <button id="send" type="submit">Gửi câu hỏi</button>
+      </div>
+    </form>
+
+    <details>
+      <summary>Response kỹ thuật</summary>
+      <pre id="debug-output">Chưa có response.</pre>
+    </details>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Nguồn bổ sung được crawler tải vào .runtime/crawl/ để biên tập và đối chiếu.
+# Nội dung thô không được tự động coi là dữ kiện hoặc commit vào corpus.
+sources:
+  - character_id: le_chan
+    url: https://sovhttdl.haiphong.gov.vn/di-tich-lich-su-cap-quoc-gia/nu-tuong-le-chan-482356
+    source_type: official_local_culture
+    note: Phân biệt các chi tiết được ghi là tương truyền hoặc theo thần tích.
+  - character_id: le_chan
+    url: https://haiphong.gov.vn/tin-tuc-su-kien/Bat-dau-dien-ra-cac-hoat-dong-thuoc-Le-hoi-truyen-thong-Nu-tuong-Le-Chan-37653
+    source_type: official_local_government
+    note: Di sản, lễ hội và ký ức công cộng tại Hải Phòng.
+  - character_id: kim_dong
+    url: https://baotanglichsu.vn/VI/Articles/3097/19203/15-5-1941-thanh-lap-djoi-thieu-nien-tien-phong-ho-chi-minh.html
+    source_type: official_museum
+    note: Bối cảnh Đội Thiếu niên và các thiếu niên anh hùng.
+  - character_id: nguyen_ba_ngoc
+    url: https://doanthanhnien.vn/chi-tiet/thanh-hoa-truy-tang-danh-hieu-anh-hung-luc-luong-vu-trang-nhan-dan-cho-liet-si-nguyen-ba-ngoc-6631
+    source_type: official_youth_union
+    note: Hành động cứu hai em nhỏ và quyết định truy tặng danh hiệu.

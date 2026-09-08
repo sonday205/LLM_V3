@@ -1,0 +1,80 @@
+x-app-image: &app_image
+  image: historical-rag-api:local
+  build: .
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-historical_rag}
+      POSTGRES_USER: ${POSTGRES_USER:-historical}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-historical} -d ${POSTGRES_DB:-historical_rag}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    <<: *app_image
+    command: alembic upgrade head
+    healthcheck:
+      disable: true
+    environment: &app_environment
+      RAG_APP_ENV: ${RAG_APP_ENV:-production}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-historical}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-historical_rag}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      GEMINI_TIMEOUT_SECONDS: ${GEMINI_TIMEOUT_SECONDS:-30}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-bge_m3}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-BAAI/bge-m3}
+      EMBEDDING_DEVICE: ${EMBEDDING_DEVICE:-auto}
+      RETRIEVAL_LIMIT: ${RETRIEVAL_LIMIT:-6}
+      MEMORY_TTL_SECONDS: ${MEMORY_TTL_SECONDS:-604800}
+      MEMORY_RECENT_TURNS: ${MEMORY_RECENT_TURNS:-6}
+      MEMORY_RELEVANT_TURNS: ${MEMORY_RELEVANT_TURNS:-4}
+      API_AUTH_ENABLED: ${API_AUTH_ENABLED:-false}
+      APP_API_KEYS: ${APP_API_KEYS:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://127.0.0.1:8010,http://localhost:8010}
+      RAG_DEBUG_RESPONSE: ${RAG_DEBUG_RESPONSE:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  ingest:
+    <<: *app_image
+    command: python -m scripts.ingest
+    healthcheck:
+      disable: true
+    environment: *app_environment
+    volumes:
+      - huggingface_cache:/app/.runtime/huggingface
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  api:
+    <<: *app_image
+    environment:
+      <<: *app_environment
+      RAG_APP_HOST: 0.0.0.0
+      RAG_APP_PORT: 8010
+    ports:
+      - "${RAG_APP_PORT:-8010}:8010"
+    volumes:
+      - huggingface_cache:/app/.runtime/huggingface
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  huggingface_cache:
