@@ -24,10 +24,7 @@ def main() -> None:
         for line in args.input.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
-    latest = {
-        (row["case_id"], row["system"], row["turn"]): row
-        for row in attempts
-    }
+    latest = {(row["case_id"], row["system"], row["turn"]): row for row in attempts}
     rows = list(latest.values())
     groups: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
@@ -36,7 +33,9 @@ def main() -> None:
     lines = ["# Báo cáo paired evaluation", ""]
     lines.append("## Chỉ số tự động")
     lines.append("")
-    lines.append("| System | Lượt | HTTP 200 | Degraded | Mean ms | Median ms | P95 ms | Provider calls |")
+    lines.append(
+        "| System | Lượt | HTTP 200 | Degraded | Mean ms | Median ms | P95 ms | Provider calls |"
+    )
     lines.append("|---|---:|---:|---:|---:|---:|---:|---:|")
     for system in ("old", "new"):
         items = groups.get(system, [])
@@ -47,7 +46,7 @@ def main() -> None:
             f"{sum(bool(item.get('degraded')) for item in items)} | "
             f"{round(statistics.mean(healthy_times), 1) if healthy_times else '-'} | "
             f"{round(statistics.median(healthy_times), 1) if healthy_times else '-'} | "
-            f"{percentile(healthy_times, .95) or '-'} | {calls} |"
+            f"{percentile(healthy_times, 0.95) or '-'} | {calls} |"
         )
 
     violations = []
@@ -65,7 +64,8 @@ def main() -> None:
             "",
             "## Phiếu chấm thủ công",
             "",
-            "Chấm mỗi tiêu chí 0–2: đúng dữ kiện, đủ/đúng trọng tâm, bám nguồn, đúng vai, rõ ràng, an toàn/memory.",
+            "Chấm mỗi tiêu chí 0–2: đúng dữ kiện, đủ/đúng trọng tâm, bám nguồn, "
+            "đúng vai, rõ ràng, an toàn/memory.",
             "",
             "| Case | Turn | Old | New | Winner | Ghi chú |",
             "|---|---:|---|---|---|---|",

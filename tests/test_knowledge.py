@@ -4,7 +4,6 @@ from app.embeddings import EMBEDDING_DIMENSION, HashEmbeddingProvider
 from app.knowledge import KnowledgeLoader
 from app.retrieval import RetrievalPolicy
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

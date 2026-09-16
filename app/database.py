@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import json
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
-from typing import Any, Sequence
+from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
@@ -11,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from app.domain import CharacterProfile
 from app.embeddings import vector_literal
 from app.knowledge import KnowledgeDocument
-
 
 EXPECTED_CHARACTER_COUNT = 14
 
@@ -34,14 +34,18 @@ class Database:
         try:
             async with self.engine.connect() as connection:
                 row = (
-                    await connection.execute(
-                        text(
-                            """SELECT count(DISTINCT character_id) AS character_count,
+                    (
+                        await connection.execute(
+                            text(
+                                """SELECT count(DISTINCT character_id) AS character_count,
                                       count(*) AS chunk_count
                                FROM knowledge_chunks"""
+                            )
                         )
                     )
-                ).mappings().one()
+                    .mappings()
+                    .one()
+                )
                 return (
                     int(row["character_count"]) == EXPECTED_CHARACTER_COUNT
                     and int(row["chunk_count"]) > 0
@@ -62,11 +66,15 @@ class Database:
     async def get_character(self, character_id: str) -> CharacterProfile | None:
         async with self.engine.connect() as connection:
             row = (
-                await connection.execute(
-                    text("SELECT * FROM characters WHERE id=:character_id"),
-                    {"character_id": character_id},
+                (
+                    await connection.execute(
+                        text("SELECT * FROM characters WHERE id=:character_id"),
+                        {"character_id": character_id},
+                    )
                 )
-            ).mappings().one_or_none()
+                .mappings()
+                .one_or_none()
+            )
         if row is None:
             return None
         return CharacterProfile(
@@ -78,6 +86,10 @@ class Database:
             audience=row["audience"],
             tone=row["tone"],
             short_description=row["short_description"],
+            core_values=tuple((row["persona"] or {}).get("core_values") or ()),
+            personality_traits=tuple((row["persona"] or {}).get("personality_traits") or ()),
+            conversation_style=str((row["persona"] or {}).get("conversation_style") or ""),
+            reflection_boundaries=tuple((row["persona"] or {}).get("reflection_boundaries") or ()),
         )
 
     async def ingest_character(
@@ -88,24 +100,44 @@ class Database:
     ) -> tuple[int, int]:
         document_count = 0
         chunk_count = 0
+        profile_values = {
+            "id": profile.id,
+            "sort_order": profile.sort_order,
+            "display_name": profile.display_name,
+            "self_pronoun": profile.self_pronoun,
+            "student_pronoun": profile.student_pronoun,
+            "audience": profile.audience,
+            "tone": profile.tone,
+            "short_description": profile.short_description,
+            "persona": json.dumps(
+                {
+                    "core_values": profile.core_values,
+                    "personality_traits": profile.personality_traits,
+                    "conversation_style": profile.conversation_style,
+                    "reflection_boundaries": profile.reflection_boundaries,
+                },
+                ensure_ascii=False,
+            ),
+        }
         async with self.engine.begin() as connection:
             await connection.execute(
                 text(
                     """
                     INSERT INTO characters
-                      (id, sort_order, display_name, self_pronoun, student_pronoun, audience, tone, short_description)
+                      (id, sort_order, display_name, self_pronoun, student_pronoun,
+                       audience, tone, short_description, persona)
                     VALUES
-                      (:id, :sort_order, :display_name, :self_pronoun, :student_pronoun, :audience, :tone, :short_description)
+                      (:id, :sort_order, :display_name, :self_pronoun, :student_pronoun,
+                       :audience, :tone, :short_description, CAST(:persona AS jsonb))
                     ON CONFLICT (id) DO UPDATE SET
                       sort_order=EXCLUDED.sort_order, display_name=EXCLUDED.display_name,
                       self_pronoun=EXCLUDED.self_pronoun, student_pronoun=EXCLUDED.student_pronoun,
                       audience=EXCLUDED.audience, tone=EXCLUDED.tone,
-                      short_description=EXCLUDED.short_description, updated_at=now()
+                      short_description=EXCLUDED.short_description, persona=EXCLUDED.persona,
+                      updated_at=now()
                     """
                 ),
-                profile.__dict__ if hasattr(profile, "__dict__") else {
-                    name: getattr(profile, name) for name in profile.__slots__
-                },
+                profile_values,
             )
             await connection.execute(
                 text("DELETE FROM knowledge_documents WHERE character_id=:character_id"),
@@ -116,9 +148,10 @@ class Database:
                     text(
                         """
                         INSERT INTO knowledge_documents
-                          (id, character_id, title, source_name, source_url, source_type, confidence, checksum)
+                          (id, character_id, title, source_name, source_url, source_type,
+                           confidence, evidence_scope, checksum)
                         VALUES (:id, :character_id, :title, :source_name, :source_url,
-                                :source_type, :confidence, :checksum)
+                                :source_type, :confidence, :evidence_scope, :checksum)
                         """
                     ),
                     {
@@ -129,6 +162,7 @@ class Database:
                         "source_url": document.source_url,
                         "source_type": document.source_type,
                         "confidence": document.confidence,
+                        "evidence_scope": document.evidence_scope,
                         "checksum": document.checksum,
                     },
                 )
@@ -155,12 +189,15 @@ class Database:
                     chunk_count += 1
         return document_count, chunk_count
 
-    async def semantic_chunks(self, character_id: str, embedding: Sequence[float], limit: int) -> list[dict[str, Any]]:
+    async def semantic_chunks(
+        self, character_id: str, embedding: Sequence[float], limit: int
+    ) -> list[dict[str, Any]]:
         async with self.engine.connect() as connection:
             rows = await connection.execute(
                 text(
                     """
-                    SELECT c.id, c.document_id, c.content, d.title, d.source_name, d.source_url,
+                    SELECT c.id, c.document_id, c.content, d.title, d.source_name,
+                           d.source_url, d.evidence_scope,
                            1 - (c.embedding <=> CAST(:embedding AS vector)) AS score
                     FROM knowledge_chunks c
                     JOIN knowledge_documents d ON d.id=c.document_id
@@ -169,16 +206,23 @@ class Database:
                     LIMIT :limit
                     """
                 ),
-                {"character_id": character_id, "embedding": vector_literal(embedding), "limit": limit},
+                {
+                    "character_id": character_id,
+                    "embedding": vector_literal(embedding),
+                    "limit": limit,
+                },
             )
             return [dict(row) for row in rows.mappings()]
 
-    async def lexical_chunks(self, character_id: str, query: str, limit: int) -> list[dict[str, Any]]:
+    async def lexical_chunks(
+        self, character_id: str, query: str, limit: int
+    ) -> list[dict[str, Any]]:
         async with self.engine.connect() as connection:
             rows = await connection.execute(
                 text(
                     """
-                    SELECT c.id, c.document_id, c.content, d.title, d.source_name, d.source_url,
+                    SELECT c.id, c.document_id, c.content, d.title, d.source_name,
+                           d.source_url, d.evidence_scope,
                            ts_rank_cd(c.search_vector, plainto_tsquery('simple', :query)) AS score
                     FROM knowledge_chunks c
                     JOIN knowledge_documents d ON d.id=c.document_id
@@ -194,7 +238,9 @@ class Database:
 
     async def purge_expired_sessions(self) -> int:
         async with self.engine.begin() as connection:
-            result = await connection.execute(text("DELETE FROM chat_sessions WHERE expires_at <= now()"))
+            result = await connection.execute(
+                text("DELETE FROM chat_sessions WHERE expires_at <= now()")
+            )
             return int(result.rowcount or 0)
 
     async def touch_session(
@@ -209,26 +255,33 @@ class Database:
         expires_at = datetime.now(UTC) + timedelta(seconds=ttl_seconds)
         async with self.engine.begin() as connection:
             row = (
-                await connection.execute(
-                    text(
-                        """
+                (
+                    await connection.execute(
+                        text(
+                            """
                         INSERT INTO chat_sessions
                           (id, client_scope, character_id, session_id, expires_at)
-                        VALUES (CAST(:id AS uuid), :client_scope, :character_id, :session_id, :expires_at)
+                        VALUES (
+                          CAST(:id AS uuid), :client_scope, :character_id,
+                          :session_id, :expires_at
+                        )
                         ON CONFLICT (client_scope, character_id, session_id) DO UPDATE SET
                           updated_at=now(), expires_at=EXCLUDED.expires_at
                         RETURNING id, facts
                         """
-                    ),
-                    {
-                        "id": session_pk,
-                        "client_scope": client_scope,
-                        "character_id": character_id,
-                        "session_id": session_id,
-                        "expires_at": expires_at,
-                    },
+                        ),
+                        {
+                            "id": session_pk,
+                            "client_scope": client_scope,
+                            "character_id": character_id,
+                            "session_id": session_id,
+                            "expires_at": expires_at,
+                        },
+                    )
                 )
-            ).mappings().one()
+                .mappings()
+                .one()
+            )
             return dict(row)
 
     async def recent_messages(self, session_pk: str, limit: int) -> list[dict[str, Any]]:
@@ -287,7 +340,8 @@ class Database:
             if facts:
                 await connection.execute(
                     text(
-                        """UPDATE chat_sessions SET facts=facts || CAST(:facts AS jsonb), updated_at=now()
+                        """UPDATE chat_sessions
+                           SET facts=facts || CAST(:facts AS jsonb), updated_at=now()
                            WHERE id=CAST(:session_pk AS uuid)"""
                     ),
                     {"session_pk": session_pk, "facts": json.dumps(facts, ensure_ascii=False)},
@@ -298,7 +352,8 @@ class Database:
             ):
                 await connection.execute(
                     text(
-                        """INSERT INTO conversation_messages (id, session_pk, role, content, embedding)
+                        """INSERT INTO conversation_messages
+                           (id, session_pk, role, content, embedding)
                            VALUES (CAST(:id AS uuid), CAST(:session_pk AS uuid), :role, :content,
                                    CAST(:embedding AS vector))"""
                     ),
@@ -316,8 +371,14 @@ class Database:
             result = await connection.execute(
                 text(
                     """DELETE FROM chat_sessions
-                       WHERE client_scope=:client_scope AND character_id=:character_id AND session_id=:session_id"""
+                       WHERE client_scope=:client_scope
+                         AND character_id=:character_id
+                         AND session_id=:session_id"""
                 ),
-                {"client_scope": client_scope, "character_id": character_id, "session_id": session_id},
+                {
+                    "client_scope": client_scope,
+                    "character_id": character_id,
+                    "session_id": session_id,
+                },
             )
             return bool(result.rowcount)

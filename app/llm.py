@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import logging
 import time
 from dataclasses import dataclass
 
 import httpx
 
 from app.config import Settings
+
+logger = logging.getLogger(__name__)
 
 
 class LLMUnavailableError(RuntimeError):
@@ -63,7 +66,24 @@ class GeminiGateway:
                 input_tokens=usage.get("promptTokenCount"),
                 output_tokens=usage.get("candidatesTokenCount"),
             )
+        except httpx.HTTPStatusError as exc:
+            status_code = exc.response.status_code
+            logger.warning(
+                "gemini_http_error model=%s status_code=%d latency_ms=%d",
+                self.settings.gemini_model,
+                status_code,
+                int((time.perf_counter() - started) * 1000),
+            )
+            raise LLMUnavailableError(f"gemini_http_{status_code}") from exc
+        except httpx.TimeoutException as exc:
+            logger.warning("gemini_timeout model=%s", self.settings.gemini_model)
+            raise LLMUnavailableError("gemini_timeout") from exc
         except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as exc:
+            logger.warning(
+                "gemini_error model=%s error_type=%s",
+                self.settings.gemini_model,
+                type(exc).__name__,
+            )
             raise LLMUnavailableError(type(exc).__name__) from exc
 
     async def close(self) -> None:

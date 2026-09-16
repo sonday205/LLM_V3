@@ -9,7 +9,6 @@ from fastapi.security import APIKeyHeader
 
 from app.config import Settings, get_settings
 
-
 api_key_header = APIKeyHeader(
     name="X-API-Key",
     scheme_name="ApplicationApiKey",
@@ -25,7 +24,9 @@ def resolve_client_scope(
     if not settings.api_auth_enabled:
         return "local-development"
     if not settings.api_keys:
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "API auth is enabled but no key is configured")
+        raise HTTPException(
+            status.HTTP_503_SERVICE_UNAVAILABLE, "API auth is enabled but no key is configured"
+        )
     if supplied_key is None or not any(
         secrets.compare_digest(supplied_key, configured) for configured in settings.api_keys
     ):

@@ -4,7 +4,7 @@ info:
   summary: API nhân vật lịch sử với một lần gọi Gemini và memory an toàn
   description: Hybrid RAG bằng PostgreSQL/pgvector, memory bền vững 7 ngày, hai precheck cục bộ và đúng
     một generation call cho mỗi chat hợp lệ.
-  version: 1.0.0
+  version: 1.1.0
 paths:
   /health:
     get:
@@ -364,6 +364,13 @@ components:
           - type: string
           - type: 'null'
           title: Source Url
+        evidence_scope:
+          type: string
+          enum:
+          - character
+          - contextual
+          title: Evidence Scope
+          default: character
         score:
           type: number
           title: Score

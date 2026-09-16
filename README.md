@@ -8,6 +8,8 @@ API độc lập để thử nghiệm chất lượng hội thoại nhân vật 
 - Hai precheck local: safety và privacy.
 - Một request Gemini `gemini-3.5-flash-lite` cho mỗi chat hợp lệ.
 - Output Gemini được trả nguyên; storage guard chỉ quyết định có lưu memory.
+- Persona và ranh giới suy ngẫm được cấu hình bằng data, không hard-code nhân vật.
+- Phân biệt tư liệu trực tiếp với bối cảnh chung để trả lời gần gũi mà không bịa đời tư.
 - FastAPI, OpenAPI 3.1, API-key auth tùy môi trường và frontend demo.
 
 ## Chạy bằng Docker
@@ -23,15 +25,46 @@ cp .env.example .env
 ```bash
 docker compose up -d --build
 docker compose ps
-curl http://127.0.0.1:8010/ready
+curl http://127.0.0.1:8005/ready
+```
+
+## Log và debug
+
+Ứng dụng ghi log dạng xoay vòng: mỗi file tối đa 10 MB và giữ 5 bản cũ.
+Log không chứa nội dung câu hỏi, prompt, session ID hay API key.
+
+Khi chạy trực tiếp, xem log tại:
+
+```bash
+tail -f logs/app.log
+```
+
+Khi chạy Docker, log nằm trong volume `app_logs` tại `/app/logs/app.log`:
+
+```bash
+docker compose exec api tail -f /app/logs/app.log
+```
+
+Tra một request theo ID trả về trong response hoặc header `X-Request-ID`:
+
+```bash
+docker compose exec api grep "REQUEST_ID_CAN_TIM" /app/logs/app.log
+```
+
+Các biến cấu hình là `RAG_LOG_LEVEL`, `RAG_LOG_FILE`, `RAG_LOG_MAX_BYTES` và
+`RAG_LOG_BACKUP_COUNT`. Đặt `RAG_LOG_LEVEL=DEBUG` trong `.env` rồi recreate API
+nếu cần log health/readiness chi tiết:
+
+```bash
+docker compose up -d --build --force-recreate api
 ```
 
 Địa chỉ:
 
-- Frontend: http://127.0.0.1:8010
-- Swagger: http://127.0.0.1:8010/docs
-- ReDoc: http://127.0.0.1:8010/redoc
-- OpenAPI JSON: http://127.0.0.1:8010/openapi.json
+- Frontend: http://127.0.0.1:8005
+- Swagger: http://127.0.0.1:8005/docs
+- ReDoc: http://127.0.0.1:8005/redoc
+- OpenAPI JSON: http://127.0.0.1:8005/openapi.json
 
 Danh sách 14 nhân vật và ID: [CHARACTERS.md](CHARACTERS.md).
 
@@ -59,7 +92,7 @@ DELETE /v1/characters/{character_id}/sessions/{session_id}
 Ví dụ:
 
 ```bash
-curl -X POST http://127.0.0.1:8010/v1/characters/to_vinh_dien/chat \
+curl -X POST http://127.0.0.1:8005/v1/characters/to_vinh_dien/chat \
   -H 'Content-Type: application/json' \
   -d '{
     "session_id": "demo-session-001",
@@ -96,12 +129,13 @@ docker compose config
 
 ## Paired evaluation 50 ca
 
-Chạy baseline cũ ở port `8005` và project này ở `8010`, rồi:
+Chạy tạm baseline cũ ở port `8006` và project này ở port tương thích production
+`8005`, rồi:
 
 ```bash
 python -m scripts.evaluate \
-  --old-url http://127.0.0.1:8005 \
-  --new-url http://127.0.0.1:8010 \
+  --old-url http://127.0.0.1:8006 \
+  --new-url http://127.0.0.1:8005 \
   --delay-seconds 10
 
 python -m scripts.report_evaluation evaluation/results/paired.jsonl \
@@ -111,5 +145,15 @@ python -m scripts.report_evaluation evaluation/results/paired.jsonl \
 Runner checkpoint từng lượt vào JSONL và dừng an toàn khi gặp lỗi quyền, quota,
 HTTP `503` hoặc fallback provider của baseline; chạy lại cùng lệnh sẽ tiếp tục
 phần còn thiếu.
+
+Đánh giá riêng 20 câu về cảm xúc, đời sống và chống bịa ký ức:
+
+```bash
+python -m scripts.evaluate \
+  --cases evaluation/persona_reflection_20.yaml \
+  --old-url http://127.0.0.1:8006 \
+  --new-url http://127.0.0.1:8005 \
+  --output evaluation/results/persona_reflection.jsonl
+```
 
 Xem thêm [kiến trúc](docs/ARCHITECTURE.md) và [OpenAPI](docs/openapi.yaml).

@@ -1,18 +1,21 @@
 from __future__ import annotations
 
+import logging
 import time
 import uuid
 from dataclasses import asdict
 
 from app.config import Settings
 from app.database import Database
+from app.domain import RetrievalResult
 from app.llm import LLMUnavailableError
 from app.memory import SafeMemoryService
 from app.prompt import PromptBuilder
-from app.domain import RetrievalResult
 from app.retrieval import HybridRetriever, RetrievalPolicy
 from app.safety import PrivacyPrecheck, SafetyPrecheck, StorageGuard
 from app.schemas import ChatRequest, ChatResponse, SourceResponse
+
+logger = logging.getLogger(__name__)
 
 
 class CharacterNotFoundError(LookupError):
@@ -42,7 +45,9 @@ class ChatService:
         self.privacy = privacy
         self.storage_guard = storage_guard
 
-    async def chat(self, character_id: str, payload: ChatRequest, client_scope: str) -> ChatResponse:
+    async def chat(
+        self, character_id: str, payload: ChatRequest, client_scope: str
+    ) -> ChatResponse:
         started = time.perf_counter()
         request_id = str(uuid.uuid4())
         profile = await self.database.get_character(character_id)
@@ -53,12 +58,24 @@ class ChatService:
         safety_result = self.safety.check(payload.message)
         safety_ms = self._elapsed(safety_started)
         if not safety_result.allowed:
+            logger.info(
+                "chat_blocked request_id=%s character_id=%s category=%s precheck=safety",
+                request_id,
+                character_id,
+                safety_result.category,
+            )
             return self._blocked(request_id, character_id, safety_result, safety_ms, started)
 
         privacy_started = time.perf_counter()
         privacy_result = self.privacy.check(payload.message)
         privacy_ms = self._elapsed(privacy_started)
         if not privacy_result.allowed:
+            logger.info(
+                "chat_blocked request_id=%s character_id=%s category=%s precheck=privacy",
+                request_id,
+                character_id,
+                privacy_result.category,
+            )
             return self._blocked(
                 request_id,
                 character_id,
@@ -86,7 +103,15 @@ class ChatService:
 
         prompt = self.prompt_builder.build(profile, payload.message, memory_context, retrieval)
         llm_started = time.perf_counter()
-        result = await self.gateway.generate(prompt)
+        try:
+            result = await self.gateway.generate(prompt)
+        except LLMUnavailableError:
+            logger.exception(
+                "chat_generation_failed request_id=%s character_id=%s",
+                request_id,
+                character_id,
+            )
+            raise
         llm_ms = self._elapsed(llm_started)
 
         storage_started = time.perf_counter()
@@ -113,7 +138,7 @@ class ChatService:
                 "input_tokens": result.input_tokens,
                 "output_tokens": result.output_tokens,
             }
-        return ChatResponse(
+        response = ChatResponse(
             request_id=request_id,
             character_id=character_id,
             answer=result.text,
@@ -127,13 +152,28 @@ class ChatService:
             usage={"input_tokens": result.input_tokens, "output_tokens": result.output_tokens},
             debug=debug,
         )
+        logger.info(
+            "chat_completed request_id=%s character_id=%s provider=%s model=%s "
+            "sources=%d memory_used=%s memory_stored=%s total_ms=%d",
+            request_id,
+            character_id,
+            result.provider,
+            result.model,
+            len(response.sources),
+            memory_context.used,
+            stored,
+            timings["total"],
+        )
+        return response
 
     async def reset_session(self, character_id: str, session_id: str, client_scope: str) -> bool:
         if await self.database.get_character(character_id) is None:
             raise CharacterNotFoundError(character_id)
         return await self.database.delete_session(client_scope, character_id, session_id)
 
-    def _blocked(self, request_id, character_id, result, safety_ms, started, privacy_ms=0) -> ChatResponse:
+    def _blocked(
+        self, request_id, character_id, result, safety_ms, started, privacy_ms=0
+    ) -> ChatResponse:
         return ChatResponse(
             request_id=request_id,
             character_id=character_id,

@@ -11,3 +11,4 @@ htmlcov/
 .runtime/
 evaluation/results/
 *.log
+logs/

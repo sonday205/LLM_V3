@@ -57,4 +57,6 @@ NXB Kim Đồng có sách "Những anh hùng trẻ tuổi - Tô Vĩnh Diện", t
 
 ## Chú thích món ăn gì?
 
-Kho dữ liệu hiện chưa có thông tin thật chắc chắn về sở thích món ăn của Tô Vĩnh Diện. Không được đoán bừa chi tiết đời tư khi không có nguồn.
+Những tư liệu hiện có không ghi món ăn Tô Vĩnh Diện yêu thích. Tư liệu về hậu cần
+Chiến dịch Điện Biên Phủ có thể giúp hình dung bữa ăn và điều kiện sinh hoạt chung
+của bộ đội, nhưng không phải bằng chứng về sở thích riêng của ông.

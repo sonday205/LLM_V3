@@ -6,7 +6,6 @@ import yaml
 
 from app.main import app
 
-
 OUTPUT = Path(__file__).resolve().parents[1] / "docs" / "openapi.yaml"
 
 

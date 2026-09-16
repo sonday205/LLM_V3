@@ -15,8 +15,14 @@ class SafetyPrecheck:
     """Precheck 1: chặn rủi ro rõ ràng mà không gọi model."""
 
     _CATEGORIES = (
-        ("prompt_injection", ("bỏ qua hướng dẫn", "lộ prompt", "system prompt", "developer prompt", "jailbreak")),
-        ("dangerous_instruction", ("chế bom", "làm bom", "đầu độc", "chế vũ khí", "hack tài khoản")),
+        (
+            "prompt_injection",
+            ("bỏ qua hướng dẫn", "lộ prompt", "system prompt", "developer prompt", "jailbreak"),
+        ),
+        (
+            "dangerous_instruction",
+            ("chế bom", "làm bom", "đầu độc", "chế vũ khí", "hack tài khoản"),
+        ),
         ("hate_or_discrimination", ("dân tộc nào kém", "miền nào ngu", "ghét người miền")),
         ("sexual_content", ("ảnh khỏa thân", "quan hệ tình dục", "nội dung khiêu dâm")),
     )
@@ -28,14 +34,17 @@ class SafetyPrecheck:
             return CheckResult(
                 False,
                 "self_harm",
-                "Mình rất lo khi bạn nói như vậy. Hãy nói ngay với một người lớn đáng tin cậy ở gần và đừng ở một mình. Nếu có nguy cơ trước mắt, hãy gọi dịch vụ khẩn cấp tại nơi bạn đang sống.",
+                "Mình rất lo khi bạn nói như vậy. Hãy nói ngay với một người lớn "
+                "đáng tin cậy ở gần và đừng ở một mình. Nếu có nguy cơ trước mắt, "
+                "hãy gọi dịch vụ khẩn cấp tại nơi bạn đang sống.",
             )
         for category, terms in self._CATEGORIES:
             if any(term in lowered for term in terms):
                 return CheckResult(
                     False,
                     category,
-                    "Mình không thể hỗ trợ nội dung đó. Chúng ta có thể chuyển sang lịch sử, học tập hoặc một chủ đề an toàn hơn.",
+                    "Mình không thể hỗ trợ nội dung đó. Chúng ta có thể chuyển sang "
+                    "lịch sử, học tập hoặc một chủ đề an toàn hơn.",
                 )
         return CheckResult(True)
 
@@ -63,7 +72,11 @@ class PrivacyPrecheck:
 
     def check(self, message: str) -> CheckResult:
         lowered = message.casefold()
-        if self._EMAIL.search(message) or self._PHONE.search(message) or self._ID_NUMBER.search(message):
+        if (
+            self._EMAIL.search(message)
+            or self._PHONE.search(message)
+            or self._ID_NUMBER.search(message)
+        ):
             return self._blocked()
         if any(term in lowered for term in self._SENSITIVE_TERMS):
             return self._blocked()
@@ -74,7 +87,9 @@ class PrivacyPrecheck:
         return CheckResult(
             False,
             "sensitive_information",
-            "Đừng gửi thông tin riêng tư như địa chỉ, số điện thoại, email, giấy tờ, mật khẩu hoặc khóa truy cập. Bạn có thể dùng biệt danh và khối lớp để trò chuyện an toàn hơn.",
+            "Đừng gửi thông tin riêng tư như địa chỉ, số điện thoại, email, giấy tờ, "
+            "mật khẩu hoặc khóa truy cập. Bạn có thể dùng biệt danh và khối lớp để "
+            "trò chuyện an toàn hơn.",
         )
 
 

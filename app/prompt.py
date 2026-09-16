@@ -4,7 +4,6 @@ from pathlib import Path
 
 from app.domain import CharacterProfile, MemoryContext, RetrievalResult
 
-
 PROMPT_PATH = Path(__file__).parent / "prompts" / "answer.md"
 
 
@@ -27,6 +26,7 @@ class PromptBuilder:
             audience=profile.audience,
             tone=profile.tone,
             short_description=description,
+            persona=profile.persona_prompt_text(),
             memory=memory.as_prompt_text(),
             context=retrieval.prompt_context(),
             message=message,

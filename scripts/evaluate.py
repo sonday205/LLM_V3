@@ -4,7 +4,6 @@ import argparse
 import asyncio
 import json
 import os
-import statistics
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -13,18 +12,21 @@ from typing import Any
 import httpx
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES = ROOT / "evaluation" / "quality_50.yaml"
 BASELINE_TIMEOUT_FLOOR_MS = 3500
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Paired live evaluation: baseline vs one-call RAG.")
-    parser.add_argument("--old-url", default="http://127.0.0.1:8005")
-    parser.add_argument("--new-url", default="http://127.0.0.1:8010")
+    parser = argparse.ArgumentParser(
+        description="Paired live evaluation: baseline vs one-call RAG."
+    )
+    parser.add_argument("--old-url", default="http://127.0.0.1:8006")
+    parser.add_argument("--new-url", default="http://127.0.0.1:8005")
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES)
-    parser.add_argument("--output", type=Path, default=ROOT / "evaluation" / "results" / "paired.jsonl")
+    parser.add_argument(
+        "--output", type=Path, default=ROOT / "evaluation" / "results" / "paired.jsonl"
+    )
     parser.add_argument("--delay-seconds", type=float, default=10.0)
     parser.add_argument("--limit", type=int)
     return parser.parse_args()
@@ -63,9 +65,7 @@ def quota_or_provider_unavailable(result: dict[str, Any]) -> bool:
     if result["http_status"] in {401, 403, 429, 503}:
         return True
     provider_fallback = bool(
-        result.get("degraded")
-        and result.get("provider") is None
-        and result.get("answer")
+        result.get("degraded") and result.get("provider") is None and result.get("answer")
     )
     # Baseline hiện tại có timeout 4 giây. Fallback sát mốc này là một kết quả
     # latency/degraded cần ghi nhận; quota/credential failure thường trả nhanh.
@@ -144,7 +144,9 @@ async def run(args: argparse.Namespace) -> None:
     if args.limit:
         cases = cases[: args.limit]
     completed = load_completed(args.output)
-    api_key = next((item.strip() for item in os.getenv("APP_API_KEYS", "").split(",") if item.strip()), None)
+    api_key = next(
+        (item.strip() for item in os.getenv("APP_API_KEYS", "").split(",") if item.strip()), None
+    )
     total_turns = sum(len(case.get("messages", [case.get("message")])) for case in cases) * 2
     current = len(completed)
     async with httpx.AsyncClient(timeout=45) as client:
@@ -163,7 +165,8 @@ async def run(args: argparse.Namespace) -> None:
                     current += 1
                     print(
                         f"[{current}/{total_turns}] {case['id']} {system} turn={turn} "
-                        f"HTTP={result['http_status']} wall={result['wall_ms']}ms calls={result.get('provider_call_count')}"
+                        f"HTTP={result['http_status']} wall={result['wall_ms']}ms "
+                        f"calls={result.get('provider_call_count')}"
                     )
                     if quota_or_provider_unavailable(result):
                         print(

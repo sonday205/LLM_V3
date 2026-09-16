@@ -5,7 +5,7 @@ import re
 from collections import defaultdict
 
 from app.database import Database
-from app.domain import RetrievedChunk, RetrievalResult
+from app.domain import RetrievalResult, RetrievedChunk
 from app.embeddings import EmbeddingProvider
 
 
@@ -66,9 +66,12 @@ class HybridRetriever:
                     source_name=row["source_name"],
                     source_url=row["source_url"],
                     score=fused_scores[chunk_id],
+                    evidence_scope=row["evidence_scope"],
                 )
             )
             per_document[row["document_id"]] += 1
             if len(selected) >= self.limit:
                 break
-        return RetrievalResult(status="grounded" if selected else "not_found", chunks=tuple(selected))
+        return RetrievalResult(
+            status="grounded" if selected else "not_found", chunks=tuple(selected)
+        )

@@ -10,7 +10,7 @@ HTTP request
   -> SafeMemoryService: facts + 6 recent turns + 4 relevant old messages
   -> RetrievalPolicy: bỏ qua lịch sử cho lượt thuần memory/hội thoại
   -> HybridRetriever: exact pgvector + PostgreSQL full-text + RRF
-  -> PromptBuilder
+  -> PromptBuilder: persona data + evidence scope + answer-mode contract
   -> Gemini 3.5 Flash-Lite (one request, no retry)
   -> raw answer returned to client
   -> StorageGuard only decides whether the turn is persisted
@@ -35,6 +35,21 @@ Session hết hạn sau 7 ngày không hoạt động và có thể xóa ngay qu
 Corpus giữ frontmatter nguồn. Retrieval luôn filter `character_id` trước khi
 xếp hạng. Semantic top-k và lexical top-k được hợp nhất bằng Reciprocal Rank
 Fusion, tối đa hai chunk mỗi tài liệu để tăng độ đa dạng nguồn.
+
+Mỗi tài liệu có `evidence_scope`:
+
+- `character`: tư liệu gắn trực tiếp với nhân vật.
+- `contextual`: bối cảnh chung của thời đại; không được dùng để suy ra sở thích,
+  hành vi hoặc ký ức riêng của nhân vật.
+
+Prompt dùng chung cho mọi nhân vật và tự chọn thầm một trong ba cách diễn đạt:
+`DỮ KIỆN CỤ THỂ`, `SUY NGẪM CÓ GIỚI HẠN` hoặc `BỐI CẢNH THỜI ĐẠI`. Việc chọn
+cách diễn đạt nằm trong cùng generation call, không có router LLM thứ hai.
+
+Persona không hard-code trong Python. Các trường `core_values`,
+`personality_traits`, `conversation_style` và `reflection_boundaries` được đọc
+từ `data/characters/<character_id>/profile.yaml`, lưu vào PostgreSQL và đưa vào
+prompt. Nhân vật mới chỉ cần profile và corpus hợp lệ, không cần thêm nhánh code.
 
 HTML crawl nằm trong `.runtime/crawl` và không được ingest tự động. Người biên
 tập phải diễn giải factual notes, giữ URL/checksum và đánh dấu xung đột nguồn.

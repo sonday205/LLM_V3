@@ -8,7 +8,6 @@ from app.safety import PrivacyPrecheck, SafetyPrecheck, StorageGuard
 from app.schemas import ChatRequest
 from app.service import ChatService
 
-
 PROFILE = CharacterProfile(
     id="to_vinh_dien",
     sort_order=1,

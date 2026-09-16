@@ -27,7 +27,9 @@ async def ingest(character_id: str | None = None) -> None:
             chunks = [chunk for document in documents for chunk in document.chunks]
             vectors = await asyncio.to_thread(provider.encode, [chunk.content for chunk in chunks])
             embeddings = {chunk.id: vector for chunk, vector in zip(chunks, vectors, strict=True)}
-            document_count, chunk_count = await database.ingest_character(profile, documents, embeddings)
+            document_count, chunk_count = await database.ingest_character(
+                profile, documents, embeddings
+            )
             totals["characters"] += 1
             totals["documents"] += document_count
             totals["chunks"] += chunk_count

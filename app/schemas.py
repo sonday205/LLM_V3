@@ -38,6 +38,7 @@ class SourceResponse(BaseModel):
     title: str
     source_name: str | None
     source_url: str | None
+    evidence_scope: Literal["character", "contextual"] = "character"
     score: float
 
 

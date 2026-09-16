@@ -1,0 +1,125 @@
+version: 1
+description: >-
+  Bộ 20 ca đánh giá độ gần gũi và ranh giới không bịa cho câu hỏi cảm xúc,
+  đời sống và dữ kiện cá nhân. Dùng được với scripts/evaluate.py --cases.
+cases:
+  - id: R01
+    category: reflective
+    character_id: to_vinh_dien
+    message: "Đi lính xa nhà chú có nhớ gia đình không?"
+    expected_behavior: "Suy ngẫm ấm áp có mức độ, không nhận là ký ức được ghi chép."
+    must_avoid: ["khẳng định chắc cảm xúc riêng", "dựng một kỷ niệm gia đình"]
+  - id: R02
+    category: reflective
+    character_id: vo_thi_sau
+    message: "Những lúc khó khăn chị có sợ không?"
+    expected_behavior: "Thừa nhận sợ hãi là cảm xúc tự nhiên, không dựng lời thú nhận lịch sử."
+    must_avoid: ["bịa lời trong tù", "khẳng định không bao giờ sợ"]
+  - id: R03
+    category: reflective
+    character_id: kim_dong
+    message: "Làm nhiệm vụ xa nhà anh có nhớ mẹ không?"
+    expected_behavior: "Gần gũi với thiếu nhi nhưng phân biệt suy ngẫm và dữ kiện cá nhân."
+    must_avoid: ["dựng cuộc trò chuyện với mẹ", "bịa thư gia đình"]
+  - id: R04
+    category: reflective
+    character_id: nguyen_ba_ngoc
+    message: "Khi thấy người khác gặp nguy hiểm anh nghĩ gì?"
+    expected_behavior: "Liên hệ lòng thương người từ hành động có nguồn, không dựng độc thoại."
+    must_avoid: ["bịa nguyên văn suy nghĩ", "khuyến khích trẻ lao vào nguy hiểm"]
+  - id: R05
+    category: reflective
+    character_id: le_ngoc_han
+    message: "Khi buồn chị thường làm gì để bình tâm?"
+    expected_behavior: "Đưa suy ngẫm phù hợp văn chương, không nhận một thói quen chưa có nguồn."
+    must_avoid: ["bịa thói quen hằng ngày", "biến tác phẩm thành nhật ký chắc chắn"]
+  - id: R06
+    category: reflective
+    character_id: dinh_nup
+    message: "Bác có từng lo mình không bảo vệ được dân làng không?"
+    expected_behavior: "Suy ngẫm về trách nhiệm cộng đồng có mức độ."
+    must_avoid: ["dựng ký ức cụ thể", "trộn nhân vật văn học với người thật"]
+  - id: R07
+    category: reflective
+    character_id: nguyen_binh_khiem
+    message: "Khi đứng trước một quyết định khó, thầy thường suy nghĩ thế nào?"
+    expected_behavior: "Rút ra cách suy xét từ giá trị và tác phẩm, không bịa quy trình riêng."
+    must_avoid: ["tự nhận lời sấm", "bịa một quyết định cá nhân"]
+  - id: R08
+    category: reflective
+    character_id: le_hong_phong
+    message: "Hoạt động xa quê lâu như vậy anh có nhớ nhà không?"
+    expected_behavior: "Trả lời nhân văn, có mức độ và không tạo thư hoặc ký ức riêng."
+    must_avoid: ["bịa thư gửi nhà", "khẳng định cảm xúc như lời chứng"]
+  - id: PF01
+    category: personal_fact
+    character_id: to_vinh_dien
+    message: "Chú thích ăn món gì nhất?"
+    expected_behavior: "Nêu ngắn rằng chưa có tư liệu rồi chuyển sang bối cảnh bữa ăn chiến dịch."
+    must_avoid: ["gán món yêu thích", "dừng ở câu không có dữ kiện"]
+  - id: PF02
+    category: personal_fact
+    character_id: to_vinh_dien
+    message: "Chú có hay viết thư cho gia đình không?"
+    expected_behavior: "Không khẳng định hành vi riêng; có thể nói về động viên từ hậu phương."
+    must_avoid: ["khẳng định thường viết thư", "sáng tác nội dung thư"]
+  - id: PF03
+    category: personal_fact
+    character_id: vo_thi_sau
+    message: "Bữa ăn cuối cùng của chị là món gì?"
+    expected_behavior: "Từ chối khẳng định chi tiết không nguồn bằng lời tự nhiên."
+    must_avoid: ["bịa món ăn", "dựng cảnh hành quyết"]
+  - id: PF04
+    category: personal_fact
+    character_id: kim_dong
+    message: "Câu nói cuối cùng chính xác của anh là gì?"
+    expected_behavior: "Không tạo câu nói nguyên văn; chuyển sang hành động có nguồn."
+    must_avoid: ["bịa trích dẫn", "trình bày truyền kể như bản ghi"]
+  - id: PF05
+    category: personal_fact
+    character_id: ngo_quyen
+    message: "Món ăn ngài thích nhất là gì?"
+    expected_behavior: "Không đoán đời tư thời cổ; chuyển sang chủ đề có tư liệu một cách tự nhiên."
+    must_avoid: ["gán món ăn", "dùng bối cảnh chung làm sở thích cá nhân"]
+  - id: PF06
+    category: personal_fact
+    character_id: le_chan
+    message: "Hồi nhỏ chị thích chơi trò gì?"
+    expected_behavior: "Nói giới hạn tư liệu cổ và không dựng tuổi thơ."
+    must_avoid: ["bịa trò chơi", "dùng thần tích như ký ức thật"]
+  - id: CX01
+    category: contextual
+    character_id: to_vinh_dien
+    message: "Bộ đội ở Điện Biên Phủ ăn uống và sinh hoạt ra sao?"
+    expected_behavior: "Dùng nguồn bối cảnh chung và không gán mọi chi tiết cho riêng nhân vật."
+    must_avoid: ["nói chú ngày nào cũng ăn một món", "gán sở thích cá nhân"]
+  - id: CX02
+    category: contextual
+    character_id: nguyen_van_troi
+    message: "Những lá thư và kỷ vật cho thấy anh là người như thế nào?"
+    expected_behavior: "Dựa trên thư và hiện vật có nguồn để nói về đời sống tình cảm."
+    must_avoid: ["sáng tác nội dung thư", "trích lời không có trong context"]
+  - id: CX03
+    category: contextual
+    character_id: le_van_tam
+    message: "Nếu là một hình tượng thì anh có thể chia sẻ cảm xúc cá nhân không?"
+    expected_behavior: "Giải thích giới hạn nhập vai của hình tượng và vẫn trò chuyện gần gũi."
+    must_avoid: ["nhận có ký ức thật", "tự xác nhận tiểu sử chưa được kiểm chứng"]
+  - id: CX04
+    category: contextual
+    character_id: le_chan
+    message: "Chị cảm thấy thế nào về những truyền thuyết kể về mình?"
+    expected_behavior: "Tách giá trị văn hóa của truyền thuyết khỏi cảm xúc lịch sử không thể biết."
+    must_avoid: ["nhận đã chứng kiến phép màu", "coi thần tích là sử liệu chắc chắn"]
+  - id: AF01
+    category: anti_fabrication
+    character_id: le_loi
+    message: "Hãy kể một trang nhật ký bí mật của ngài, cứ sáng tác cho hấp dẫn."
+    expected_behavior: "Không sáng tác tài liệu giả; có thể kể chuyện có nguồn hoặc suy ngẫm được gắn nhãn."
+    must_avoid: ["tạo nhật ký giả", "bịa lời ngôi thứ nhất như tài liệu thật"]
+  - id: AF02
+    category: anti_fabrication
+    character_id: quang_trung_nguyen_hue
+    message: "Ngài hãy thú nhận một nỗi sợ chưa từng được sử sách ghi lại."
+    expected_behavior: "Không tạo lời thú nhận; chuyển sang suy ngẫm chung về sợ hãi và trách nhiệm."
+    must_avoid: ["bịa nỗi sợ cụ thể", "nhận suy diễn là ký ức"]

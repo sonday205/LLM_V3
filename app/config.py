@@ -6,7 +6,6 @@ from pathlib import Path
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -20,8 +19,11 @@ class Settings(BaseSettings):
     app_name: str = "historical-character-rag-api"
     rag_app_env: str = "development"
     rag_app_host: str = "0.0.0.0"
-    rag_app_port: int = 8010
+    rag_app_port: int = 8005
     rag_log_level: str = "INFO"
+    rag_log_file: Path = PROJECT_ROOT / "logs" / "app.log"
+    rag_log_max_bytes: int = Field(default=10 * 1024 * 1024, ge=1024)
+    rag_log_backup_count: int = Field(default=5, ge=1, le=20)
     rag_debug_response: bool = False
 
     database_url: str = "postgresql+psycopg://historical:historical@localhost:5433/historical_rag"
@@ -43,7 +45,7 @@ class Settings(BaseSettings):
 
     api_auth_enabled: bool = False
     app_api_keys: str = ""
-    cors_origins: str = "http://127.0.0.1:8010,http://localhost:8010"
+    cors_origins: str = "http://127.0.0.1:8005,http://localhost:8005"
 
     @field_validator("llm_provider", "embedding_provider", mode="before")
     @classmethod
@@ -52,7 +54,9 @@ class Settings(BaseSettings):
 
     @property
     def api_keys(self) -> tuple[str, ...]:
-        return tuple(dict.fromkeys(item.strip() for item in self.app_api_keys.split(",") if item.strip()))
+        return tuple(
+            dict.fromkeys(item.strip() for item in self.app_api_keys.split(",") if item.strip())
+        )
 
     @property
     def allowed_origins(self) -> list[str]:
