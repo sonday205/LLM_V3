@@ -26,6 +26,7 @@ from app.schemas import (
     SessionResetResponse,
 )
 from app.service import CharacterNotFoundError
+from app.voice.router import router as voice_router
 
 logger = logging.getLogger(__name__)
 
@@ -67,11 +68,12 @@ def create_app(settings: Settings | None = None, container: AppContainer | None 
 
     application = FastAPI(
         title="Historical Character Hybrid RAG API",
-        version="1.1.0",
-        summary="API nhân vật lịch sử với một lần gọi Gemini và memory an toàn",
+        version="1.2.0",
+        summary="API nhân vật lịch sử với RAG, memory an toàn và voice STT",
         description=(
             "Hybrid RAG bằng PostgreSQL/pgvector, memory bền vững 7 ngày, hai precheck cục bộ "
-            "và đúng một generation call cho mỗi chat hợp lệ."
+            "và đúng một generation call cho mỗi chat hợp lệ. Voice push-to-talk dùng "
+            "WebSocket nên được mô tả riêng ngoài OpenAPI."
         ),
         openapi_version="3.1.0",
         lifespan=lifespan,
@@ -131,6 +133,7 @@ def create_app(settings: Settings | None = None, container: AppContainer | None 
             corpus_ready=corpus_ready,
             llm_model=resolved.gemini_model,
             embedding_provider=resolved.embedding_provider,
+            stt_configured=resolved.stt_configured,
         )
 
     @application.get(
@@ -198,6 +201,8 @@ def create_app(settings: Settings | None = None, container: AppContainer | None 
             client_scope,
         )
         return SessionResetResponse(session_id=session_id, deleted=deleted)
+
+    application.include_router(voice_router)
 
     @application.exception_handler(CharacterNotFoundError)
     async def character_not_found(_: Request, exc: CharacterNotFoundError) -> JSONResponse:

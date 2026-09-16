@@ -70,6 +70,7 @@ class HealthResponse(BaseModel):
     corpus_ready: bool
     llm_model: str
     embedding_provider: str
+    stt_configured: bool
 
 
 class ErrorResponse(BaseModel):

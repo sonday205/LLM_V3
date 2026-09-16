@@ -12,7 +12,7 @@ from app.config import Settings
 _SENSITIVE_PATTERNS = (
     (
         re.compile(
-            r"(?i)((?:GEMINI_API_KEY|APP_API_KEYS|x-goog-api-key)[\"']?"
+            r"(?i)((?:GEMINI_API_KEY|OPENAI_API_KEY|APP_API_KEYS|x-goog-api-key)[\"']?"
             r"\s*[=:]\s*[\"']?)[^\s,;\"'}]+"
         ),
         r"\1[REDACTED]",

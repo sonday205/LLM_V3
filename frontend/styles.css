@@ -23,6 +23,12 @@ button:disabled { opacity: .5; cursor: wait; }
 .meta { margin-top: 8px; color: #9fb0c5; font-size: 12px; }
 form { background: #101d2e; border: 1px solid #28415e; border-radius: 14px; padding: 14px; }
 textarea { width: 100%; min-height: 90px; resize: vertical; }
+.voice-panel { display: flex; gap: 12px; align-items: center; margin-top: 10px; padding: 10px; background: #0b1727; border: 1px solid #28415e; border-radius: 10px; }
+.voice-panel strong { color: #aebed2; font-size: 13px; }
+.voice-panel p { margin: 5px 0 0; color: #5eead4; font-size: 13px; }
+.mic { min-width: 132px; background: #1d4ed8; border-color: #60a5fa; touch-action: none; user-select: none; }
+.mic.recording { background: #b91c1c; border-color: #f87171; }
+.hidden { display: none; }
 .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
 .debug { display: flex; grid-auto-flow: column; align-items: center; }
 details { margin-top: 14px; color: #aebed2; }

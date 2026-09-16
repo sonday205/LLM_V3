@@ -27,6 +27,13 @@
 
     <form id="chat-form">
       <textarea id="message" maxlength="2000" placeholder="Nhập câu hỏi…" required></textarea>
+      <section class="voice-panel" aria-label="Nhập câu hỏi bằng giọng nói">
+        <button id="mic" class="mic" type="button" aria-pressed="false">🎙 Giữ để nói</button>
+        <div>
+          <strong id="voice-status">STT đang kiểm tra cấu hình…</strong>
+          <p id="voice-transcript" class="hidden"></p>
+        </div>
+      </section>
       <div class="actions">
         <label class="debug"><input id="debug" type="checkbox" checked> Debug</label>
         <button id="send" type="submit">Gửi câu hỏi</button>

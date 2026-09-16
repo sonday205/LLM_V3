@@ -20,24 +20,29 @@ def test_file_logging_redacts_credentials(tmp_path) -> None:
     configure_logging(settings)
 
     logger = logging.getLogger("tests.logging")
-    logger.warning("GEMINI_API_KEY=secret-value 'x-goog-api-key': 'another-secret'")
+    logger.warning(
+        "GEMINI_API_KEY=secret-value OPENAI_API_KEY=openai-secret "
+        "'x-goog-api-key': 'another-secret'"
+    )
     for handler in logging.getLogger().handlers:
         handler.flush()
 
     contents = log_path.read_text(encoding="utf-8")
     assert "secret-value" not in contents
+    assert "openai-secret" not in contents
     assert "another-secret" not in contents
-    assert contents.count("[REDACTED]") == 2
+    assert contents.count("[REDACTED]") == 3
 
 
 def test_formatter_redacts_bearer_and_gemini_key() -> None:
     formatter = RedactingFormatter("%(message)s")
+    fake_gemini_key = "AI" + "za" + ("A" * 30)
     record = logging.LogRecord(
         "test",
         logging.INFO,
         __file__,
         1,
-        "Authorization=Bearer token-123 AIza123456789012345678901234567890",
+        f"Authorization=Bearer token-123 {fake_gemini_key}",
         (),
         None,
     )

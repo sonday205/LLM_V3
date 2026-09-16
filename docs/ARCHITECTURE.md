@@ -20,6 +20,23 @@ Không có LLM router, post-safety, fact-check, reviewer, repair hoặc LLM memo
 summary. Embedding BGE-M3 chạy cục bộ bằng Transformer + CLS pooling +
 L2-normalize nên không được tính là provider call.
 
+## Luồng voice STT
+
+```text
+Browser microphone
+  -> PCM16 mono 24 kHz
+  -> WS /v1/characters/{character_id}/voice
+  -> kiểm tra character_id và application API key
+  -> OpenAI Realtime transcription
+  -> transcript.delta / transcript.final
+  -> người dùng kiểm tra transcript trong ô nhập
+  -> POST /chat chỉ khi người dùng chủ động bấm gửi
+```
+
+OpenAI key chỉ tồn tại ở backend. STT không truy cập RAG, memory hay Gemini và
+không tự động lưu audio/transcript. Chuẩn hóa transcript chỉ xử lý Unicode và
+khoảng trắng, không hard-code tên một nhân vật cụ thể.
+
 ## Ranh giới an toàn
 
 Hai precheck có quyền trả câu trả lời cục bộ và dừng trước Gemini. Output của

@@ -10,6 +10,7 @@ API độc lập để thử nghiệm chất lượng hội thoại nhân vật 
 - Output Gemini được trả nguyên; storage guard chỉ quyết định có lưu memory.
 - Persona và ranh giới suy ngẫm được cấu hình bằng data, không hard-code nhân vật.
 - Phân biệt tư liệu trực tiếp với bối cảnh chung để trả lời gần gũi mà không bịa đời tư.
+- Push-to-talk STT tiếng Việt qua OpenAI Realtime WebSocket, transcript được kiểm tra trước khi gửi chat.
 - FastAPI, OpenAPI 3.1, API-key auth tùy môi trường và frontend demo.
 
 ## Chạy bằng Docker
@@ -20,7 +21,7 @@ File `.env` local đã được ignore. Để cấu hình mới từ đầu:
 cp .env.example .env
 ```
 
-Điền `GEMINI_API_KEY`, sau đó chạy:
+Điền `GEMINI_API_KEY`. Nếu dùng microphone, điền thêm `OPENAI_API_KEY`, sau đó chạy:
 
 ```bash
 docker compose up -d --build
@@ -87,6 +88,7 @@ GET /ready
 GET /v1/characters
 POST /v1/characters/{character_id}/chat
 DELETE /v1/characters/{character_id}/sessions/{session_id}
+WS /v1/characters/{character_id}/voice
 ```
 
 Ví dụ:
@@ -103,6 +105,33 @@ curl -X POST http://127.0.0.1:8005/v1/characters/to_vinh_dien/chat \
 
 Khi `API_AUTH_ENABLED=true`, thêm header `X-API-Key`. Frontend chỉ giữ key trong
 `sessionStorage` của tab hiện tại.
+
+## Speech-to-text push-to-talk
+
+STT giữ nguyên cách hoạt động của bản LLM_v4 trước: browser gửi audio PCM16 mono
+24 kHz qua WebSocket tới API; API chuyển tiếp tới OpenAI Realtime transcription.
+Transcript được đặt vào ô nhập để người dùng kiểm tra hoặc sửa trước khi bấm gửi,
+vì vậy STT không tự gọi Gemini và không làm tăng `provider_call_count` của chat.
+
+Cấu hình trong `.env`:
+
+```dotenv
+OPENAI_API_KEY=sk-...
+OPENAI_REALTIME_MODEL=gpt-realtime-whisper
+OPENAI_REALTIME_URL=wss://api.openai.com/v1/realtime?intent=transcription
+```
+
+Mặc định `gpt-realtime-whisper` được giữ để tương thích với LLM_v4 cũ. Adapter
+cũng hỗ trợ `gpt-live-transcribe`; chỉ cần đổi `OPENAI_REALTIME_MODEL` khi muốn
+chuyển sang model transcription hiện tại, không phải sửa code.
+
+Không đưa `OPENAI_API_KEY` vào frontend. Docker chỉ truyền key vào container API.
+Khi `API_AUTH_ENABLED=true`, browser gửi application key riêng trong event
+`session.start`; application key này không phải OpenAI key.
+
+Mở frontend bằng `http://127.0.0.1:8005`, `http://localhost:8005` hoặc HTTPS.
+Không dùng `http://0.0.0.0:8005` vì browser không cho origin này truy cập mic.
+Contract WebSocket chi tiết nằm tại [docs/VOICE_STT.md](docs/VOICE_STT.md).
 
 ## Corpus và crawl
 

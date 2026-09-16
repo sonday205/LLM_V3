@@ -17,6 +17,16 @@ api_key_header = APIKeyHeader(
 )
 
 
+def application_api_key_valid(supplied_key: str | None, settings: Settings) -> bool:
+    """Kiểm tra API key cho WebSocket, nơi browser không dùng được Depends như REST."""
+
+    if not settings.api_auth_enabled:
+        return True
+    if supplied_key is None or not settings.api_keys:
+        return False
+    return any(secrets.compare_digest(supplied_key, configured) for configured in settings.api_keys)
+
+
 def resolve_client_scope(
     supplied_key: Annotated[str | None, Depends(api_key_header)],
     settings: Annotated[Settings, Depends(get_settings)],
@@ -27,9 +37,7 @@ def resolve_client_scope(
         raise HTTPException(
             status.HTTP_503_SERVICE_UNAVAILABLE, "API auth is enabled but no key is configured"
         )
-    if supplied_key is None or not any(
-        secrets.compare_digest(supplied_key, configured) for configured in settings.api_keys
-    ):
+    if not application_api_key_valid(supplied_key, settings):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid or missing X-API-Key")
     return hashlib.sha256(supplied_key.encode("utf-8")).hexdigest()[:24]
 

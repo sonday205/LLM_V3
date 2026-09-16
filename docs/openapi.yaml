@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: Historical Character Hybrid RAG API
-  summary: API nhân vật lịch sử với một lần gọi Gemini và memory an toàn
+  summary: API nhân vật lịch sử với RAG, memory an toàn và voice STT
   description: Hybrid RAG bằng PostgreSQL/pgvector, memory bền vững 7 ngày, hai precheck cục bộ và đúng
-    một generation call cho mỗi chat hợp lệ.
-  version: 1.1.0
+    một generation call cho mỗi chat hợp lệ. Voice push-to-talk dùng WebSocket nên được mô tả riêng ngoài
+    OpenAPI.
+  version: 1.2.0
 paths:
   /health:
     get:
@@ -321,6 +322,9 @@ components:
         embedding_provider:
           type: string
           title: Embedding Provider
+        stt_configured:
+          type: boolean
+          title: Stt Configured
       type: object
       required:
       - status
@@ -329,6 +333,7 @@ components:
       - corpus_ready
       - llm_model
       - embedding_provider
+      - stt_configured
       title: HealthResponse
     SessionResetResponse:
       properties:

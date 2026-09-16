@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-3.5-flash-lite"
     gemini_timeout_seconds: float = 30.0
 
+    openai_api_key: str | None = None
+    openai_realtime_model: str = "gpt-realtime-whisper"
+    openai_realtime_url: str = "wss://api.openai.com/v1/realtime?intent=transcription"
+
     embedding_provider: str = "bge_m3"
     embedding_model: str = "BAAI/bge-m3"
     embedding_device: str = "auto"
@@ -65,6 +69,10 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.rag_app_env.casefold() == "production"
+
+    @property
+    def stt_configured(self) -> bool:
+        return bool(self.openai_api_key and self.openai_api_key.strip())
 
 
 @lru_cache(maxsize=1)
