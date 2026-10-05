@@ -1,0 +1,56 @@
+source_document: Làm các dữ liệu nhân vật lịch sử.docx
+required_character_ids:
+  - to_vinh_dien
+  - kim_dong
+  - vo_thi_sau
+  - le_van_tam
+  - nguyen_ba_ngoc
+  - dinh_nup
+  - ly_tu_trong
+  - pham_ngoc_thao
+  - vu_ngoc_nha
+  - dang_tran_duc
+  - pham_xuan_an
+  - le_huu_thuy
+  - hung_vuong
+  - an_duong_vuong
+  - hai_ba_trung
+  - ba_trieu
+  - ly_nam_de
+  - trieu_quang_phuc
+  - phung_hung
+  - mai_thuc_loan
+  - khuc_thua_du
+  - duong_dinh_nghe
+  - ngo_quyen
+  - dinh_bo_linh
+  - le_hoan
+  - ly_thai_to
+  - ly_thuong_kiet
+  - tran_hung_dao
+  - le_loi
+  - nguyen_trai
+  - quang_trung_nguyen_hue
+  - thanh_thien
+  - le_chan
+  - duong_van_nga
+  - y_lan
+  - tran_thi_dung
+  - ly_chieu_hoang
+  - an_tu
+  - huyen_tran
+  - nguyen_thi_anh
+  - nguyen_thi_due
+  - le_ngoc_han
+  - doan_thi_diem
+  - ho_xuan_huong
+existing_outside_document:
+  - nguyen_van_troi
+  - le_hong_phong
+  - nguyen_binh_khiem
+identity_corrections:
+  - document_name: Thiếu tướng Lê Đức Thúy
+    character_id: le_huu_thuy
+    verified_name: Đại tá Lê Hữu Thúy
+    reason: Tác giả Điệp viên giữa sa mạc lửa, bút danh Nhị Hồ.
+    source_url: https://ct.qdnd.vn/van-hoa-xa-hoi/pham-gia-4-dac-biet-530938

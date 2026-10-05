@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_every_character_has_data_driven_persona() -> None:
     profiles = KnowledgeLoader().load_profiles(ROOT / "data" / "characters")
-    assert len(profiles) == 14
+    assert len(profiles) == 47
     for profile in profiles:
         assert profile.core_values
         assert profile.personality_traits

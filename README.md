@@ -2,7 +2,7 @@
 
 API độc lập để thử nghiệm chất lượng hội thoại nhân vật lịch sử với:
 
-- 14 nhân vật và corpus có nguồn.
+- 47 mục nhân vật và corpus có nguồn, đủ 44 mục trong danh sách Word yêu cầu.
 - PostgreSQL + pgvector hybrid RAG, không dùng Neo4j/GraphRAG.
 - Memory bền vững, TTL 7 ngày, truy hồi theo gần đây và ngữ nghĩa.
 - Hai precheck local: safety và privacy.
@@ -67,7 +67,8 @@ docker compose up -d --build --force-recreate api
 - ReDoc: http://127.0.0.1:8005/redoc
 - OpenAPI JSON: http://127.0.0.1:8005/openapi.json
 
-Danh sách 14 nhân vật và ID: [CHARACTERS.md](CHARACTERS.md).
+Danh sách 47 mục nhân vật và ID: [CHARACTERS.md](CHARACTERS.md).
+Đối chiếu file Word và cách nạp dữ liệu mới: [docs/CHARACTER_EXPANSION.md](docs/CHARACTER_EXPANSION.md).
 
 Lần chạy đầu cần tải model embedding `BAAI/bge-m3`, vì vậy service `ingest` có
 thể mất vài phút. Muốn smoke test nhẹ, đặt `EMBEDDING_PROVIDER=hash`; không dùng

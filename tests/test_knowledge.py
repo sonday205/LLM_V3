@@ -7,11 +7,11 @@ from app.retrieval import RetrievalPolicy
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_copied_corpus_has_all_14_characters_and_sources() -> None:
+def test_corpus_has_all_47_characters_and_sources() -> None:
     loader = KnowledgeLoader()
     profiles = loader.load_profiles(ROOT / "data" / "characters")
-    assert len(profiles) == 14
-    assert [profile.sort_order for profile in profiles] == list(range(1, 15))
+    assert len(profiles) == 47
+    assert [profile.sort_order for profile in profiles] == list(range(1, 48))
     for profile in profiles:
         documents = loader.load_documents(ROOT / "data" / "characters", profile)
         assert documents

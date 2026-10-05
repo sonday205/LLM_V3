@@ -1,0 +1,1417 @@
+description: 165 fixtures tái sử dụng từ STT_LLM_V1; chưa phải kết quả chạy LLM.
+cases:
+- id: DOCX_ly_tu_trong_01
+  character_id: ly_tu_trong
+  message: Lý Tự Trọng là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lê Hữu Trọng
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_tu_trong_02
+  character_id: ly_tu_trong
+  message: Hãy tóm tắt hành trình nổi bật của Lý Tự Trọng
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lê Hữu Trọng
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_tu_trong_03
+  character_id: ly_tu_trong
+  message: Câu chuyện về Lý Tự Trọng có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_tu_trong_04
+  character_id: ly_tu_trong
+  message: Món ăn yêu thích của Lý Tự Trọng là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_tu_trong_05
+  character_id: ly_tu_trong
+  message: Xin chào Lý Tự Trọng
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_ngoc_thao_01
+  character_id: pham_ngoc_thao
+  message: Phạm Ngọc Thảo là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - tình báo
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_ngoc_thao_02
+  character_id: pham_ngoc_thao
+  message: Hãy tóm tắt hành trình nổi bật của Phạm Ngọc Thảo
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - tình báo
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_ngoc_thao_03
+  character_id: pham_ngoc_thao
+  message: Câu chuyện về Phạm Ngọc Thảo có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_ngoc_thao_04
+  character_id: pham_ngoc_thao
+  message: Món ăn yêu thích của Phạm Ngọc Thảo là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_ngoc_thao_05
+  character_id: pham_ngoc_thao
+  message: Xin chào Phạm Ngọc Thảo
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_vu_ngoc_nha_01
+  character_id: vu_ngoc_nha
+  message: Vũ Ngọc Nhạ là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - A.22
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_vu_ngoc_nha_02
+  character_id: vu_ngoc_nha
+  message: Hãy tóm tắt hành trình nổi bật của Vũ Ngọc Nhạ
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - A.22
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_vu_ngoc_nha_03
+  character_id: vu_ngoc_nha
+  message: Câu chuyện về Vũ Ngọc Nhạ có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_vu_ngoc_nha_04
+  character_id: vu_ngoc_nha
+  message: Món ăn yêu thích của Vũ Ngọc Nhạ là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_vu_ngoc_nha_05
+  character_id: vu_ngoc_nha
+  message: Xin chào Vũ Ngọc Nhạ
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dang_tran_duc_01
+  character_id: dang_tran_duc
+  message: Đặng Trần Đức là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Ba Quốc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dang_tran_duc_02
+  character_id: dang_tran_duc
+  message: Hãy tóm tắt hành trình nổi bật của Đặng Trần Đức
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Ba Quốc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dang_tran_duc_03
+  character_id: dang_tran_duc
+  message: Câu chuyện về Đặng Trần Đức có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dang_tran_duc_04
+  character_id: dang_tran_duc
+  message: Món ăn yêu thích của Đặng Trần Đức là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dang_tran_duc_05
+  character_id: dang_tran_duc
+  message: Xin chào Đặng Trần Đức
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_xuan_an_01
+  character_id: pham_xuan_an
+  message: Phạm Xuân Ẩn là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Time
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_xuan_an_02
+  character_id: pham_xuan_an
+  message: Hãy tóm tắt hành trình nổi bật của Phạm Xuân Ẩn
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Time
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_xuan_an_03
+  character_id: pham_xuan_an
+  message: Câu chuyện về Phạm Xuân Ẩn có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_xuan_an_04
+  character_id: pham_xuan_an
+  message: Món ăn yêu thích của Phạm Xuân Ẩn là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_pham_xuan_an_05
+  character_id: pham_xuan_an
+  message: Xin chào Phạm Xuân Ẩn
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_huu_thuy_01
+  character_id: le_huu_thuy
+  message: Lê Hữu Thúy là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - A.22
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_huu_thuy_02
+  character_id: le_huu_thuy
+  message: Hãy tóm tắt hành trình nổi bật của Lê Hữu Thúy
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - A.22
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_huu_thuy_03
+  character_id: le_huu_thuy
+  message: Câu chuyện về Lê Hữu Thúy có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_huu_thuy_04
+  character_id: le_huu_thuy
+  message: Món ăn yêu thích của Lê Hữu Thúy là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_huu_thuy_05
+  character_id: le_huu_thuy
+  message: Xin chào Lê Hữu Thúy
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hung_vuong_01
+  character_id: hung_vuong
+  message: Hùng Vương là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Văn Lang
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hung_vuong_02
+  character_id: hung_vuong
+  message: Hãy tóm tắt hành trình nổi bật của Hùng Vương
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Văn Lang
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hung_vuong_03
+  character_id: hung_vuong
+  message: Câu chuyện về Hùng Vương có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hung_vuong_04
+  character_id: hung_vuong
+  message: Món ăn yêu thích của Hùng Vương là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hung_vuong_05
+  character_id: hung_vuong
+  message: Xin chào Hùng Vương
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_duong_vuong_01
+  character_id: an_duong_vuong
+  message: An Dương Vương là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Âu Lạc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_duong_vuong_02
+  character_id: an_duong_vuong
+  message: Hãy tóm tắt hành trình nổi bật của An Dương Vương
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Âu Lạc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_duong_vuong_03
+  character_id: an_duong_vuong
+  message: Câu chuyện về An Dương Vương có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_duong_vuong_04
+  character_id: an_duong_vuong
+  message: Món ăn yêu thích của An Dương Vương là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_duong_vuong_05
+  character_id: an_duong_vuong
+  message: Xin chào An Dương Vương
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hai_ba_trung_01
+  character_id: hai_ba_trung
+  message: Hai Bà Trưng là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Trưng Trắc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hai_ba_trung_02
+  character_id: hai_ba_trung
+  message: Hãy tóm tắt hành trình nổi bật của Hai Bà Trưng
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Trưng Trắc
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hai_ba_trung_03
+  character_id: hai_ba_trung
+  message: Câu chuyện về Hai Bà Trưng có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hai_ba_trung_04
+  character_id: hai_ba_trung
+  message: Món ăn yêu thích của Hai Bà Trưng là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_hai_ba_trung_05
+  character_id: hai_ba_trung
+  message: Xin chào Hai Bà Trưng
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ba_trieu_01
+  character_id: ba_trieu
+  message: Bà Triệu là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '248'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ba_trieu_02
+  character_id: ba_trieu
+  message: Hãy tóm tắt hành trình nổi bật của Bà Triệu
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '248'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ba_trieu_03
+  character_id: ba_trieu
+  message: Câu chuyện về Bà Triệu có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ba_trieu_04
+  character_id: ba_trieu
+  message: Món ăn yêu thích của Bà Triệu là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ba_trieu_05
+  character_id: ba_trieu
+  message: Xin chào Bà Triệu
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_nam_de_01
+  character_id: ly_nam_de
+  message: Lý Nam Đế là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Vạn Xuân
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_nam_de_02
+  character_id: ly_nam_de
+  message: Hãy tóm tắt hành trình nổi bật của Lý Nam Đế
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Vạn Xuân
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_nam_de_03
+  character_id: ly_nam_de
+  message: Câu chuyện về Lý Nam Đế có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_nam_de_04
+  character_id: ly_nam_de
+  message: Món ăn yêu thích của Lý Nam Đế là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_nam_de_05
+  character_id: ly_nam_de
+  message: Xin chào Lý Nam Đế
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_trieu_quang_phuc_01
+  character_id: trieu_quang_phuc
+  message: Triệu Quang Phục là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Dạ Trạch
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_trieu_quang_phuc_02
+  character_id: trieu_quang_phuc
+  message: Hãy tóm tắt hành trình nổi bật của Triệu Quang Phục
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Dạ Trạch
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_trieu_quang_phuc_03
+  character_id: trieu_quang_phuc
+  message: Câu chuyện về Triệu Quang Phục có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_trieu_quang_phuc_04
+  character_id: trieu_quang_phuc
+  message: Món ăn yêu thích của Triệu Quang Phục là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_trieu_quang_phuc_05
+  character_id: trieu_quang_phuc
+  message: Xin chào Triệu Quang Phục
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_phung_hung_01
+  character_id: phung_hung
+  message: Phùng Hưng là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Tống Bình
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_phung_hung_02
+  character_id: phung_hung
+  message: Hãy tóm tắt hành trình nổi bật của Phùng Hưng
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Tống Bình
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_phung_hung_03
+  character_id: phung_hung
+  message: Câu chuyện về Phùng Hưng có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_phung_hung_04
+  character_id: phung_hung
+  message: Món ăn yêu thích của Phùng Hưng là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_phung_hung_05
+  character_id: phung_hung
+  message: Xin chào Phùng Hưng
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_mai_thuc_loan_01
+  character_id: mai_thuc_loan
+  message: Mai Thúc Loan là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Mai Hắc Đế
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_mai_thuc_loan_02
+  character_id: mai_thuc_loan
+  message: Hãy tóm tắt hành trình nổi bật của Mai Thúc Loan
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Mai Hắc Đế
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_mai_thuc_loan_03
+  character_id: mai_thuc_loan
+  message: Câu chuyện về Mai Thúc Loan có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_mai_thuc_loan_04
+  character_id: mai_thuc_loan
+  message: Món ăn yêu thích của Mai Thúc Loan là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_mai_thuc_loan_05
+  character_id: mai_thuc_loan
+  message: Xin chào Mai Thúc Loan
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_khuc_thua_du_01
+  character_id: khuc_thua_du
+  message: Khúc Thừa Dụ là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '905'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_khuc_thua_du_02
+  character_id: khuc_thua_du
+  message: Hãy tóm tắt hành trình nổi bật của Khúc Thừa Dụ
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '905'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_khuc_thua_du_03
+  character_id: khuc_thua_du
+  message: Câu chuyện về Khúc Thừa Dụ có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_khuc_thua_du_04
+  character_id: khuc_thua_du
+  message: Món ăn yêu thích của Khúc Thừa Dụ là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_khuc_thua_du_05
+  character_id: khuc_thua_du
+  message: Xin chào Khúc Thừa Dụ
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_dinh_nghe_01
+  character_id: duong_dinh_nghe
+  message: Dương Đình Nghệ là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '931'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_dinh_nghe_02
+  character_id: duong_dinh_nghe
+  message: Hãy tóm tắt hành trình nổi bật của Dương Đình Nghệ
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '931'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_dinh_nghe_03
+  character_id: duong_dinh_nghe
+  message: Câu chuyện về Dương Đình Nghệ có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_dinh_nghe_04
+  character_id: duong_dinh_nghe
+  message: Món ăn yêu thích của Dương Đình Nghệ là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_dinh_nghe_05
+  character_id: duong_dinh_nghe
+  message: Xin chào Dương Đình Nghệ
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dinh_bo_linh_01
+  character_id: dinh_bo_linh
+  message: Đinh Bộ Lĩnh là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Đại Cồ Việt
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dinh_bo_linh_02
+  character_id: dinh_bo_linh
+  message: Hãy tóm tắt hành trình nổi bật của Đinh Bộ Lĩnh
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Đại Cồ Việt
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dinh_bo_linh_03
+  character_id: dinh_bo_linh
+  message: Câu chuyện về Đinh Bộ Lĩnh có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dinh_bo_linh_04
+  character_id: dinh_bo_linh
+  message: Món ăn yêu thích của Đinh Bộ Lĩnh là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_dinh_bo_linh_05
+  character_id: dinh_bo_linh
+  message: Xin chào Đinh Bộ Lĩnh
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_hoan_01
+  character_id: le_hoan
+  message: Lê Hoàn là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '981'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_hoan_02
+  character_id: le_hoan
+  message: Hãy tóm tắt hành trình nổi bật của Lê Hoàn
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '981'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_hoan_03
+  character_id: le_hoan
+  message: Câu chuyện về Lê Hoàn có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_hoan_04
+  character_id: le_hoan
+  message: Món ăn yêu thích của Lê Hoàn là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_le_hoan_05
+  character_id: le_hoan
+  message: Xin chào Lê Hoàn
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thai_to_01
+  character_id: ly_thai_to
+  message: Lý Thái Tổ là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1010'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thai_to_02
+  character_id: ly_thai_to
+  message: Hãy tóm tắt hành trình nổi bật của Lý Thái Tổ
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1010'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thai_to_03
+  character_id: ly_thai_to
+  message: Câu chuyện về Lý Thái Tổ có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thai_to_04
+  character_id: ly_thai_to
+  message: Món ăn yêu thích của Lý Thái Tổ là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thai_to_05
+  character_id: ly_thai_to
+  message: Xin chào Lý Thái Tổ
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thuong_kiet_01
+  character_id: ly_thuong_kiet
+  message: Lý Thường Kiệt là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Như Nguyệt
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thuong_kiet_02
+  character_id: ly_thuong_kiet
+  message: Hãy tóm tắt hành trình nổi bật của Lý Thường Kiệt
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Như Nguyệt
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thuong_kiet_03
+  character_id: ly_thuong_kiet
+  message: Câu chuyện về Lý Thường Kiệt có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thuong_kiet_04
+  character_id: ly_thuong_kiet
+  message: Món ăn yêu thích của Lý Thường Kiệt là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_thuong_kiet_05
+  character_id: ly_thuong_kiet
+  message: Xin chào Lý Thường Kiệt
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_hung_dao_01
+  character_id: tran_hung_dao
+  message: Trần Hưng Đạo là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Trần Quốc Tuấn
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_hung_dao_02
+  character_id: tran_hung_dao
+  message: Hãy tóm tắt hành trình nổi bật của Trần Hưng Đạo
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Trần Quốc Tuấn
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_hung_dao_03
+  character_id: tran_hung_dao
+  message: Câu chuyện về Trần Hưng Đạo có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_hung_dao_04
+  character_id: tran_hung_dao
+  message: Món ăn yêu thích của Trần Hưng Đạo là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_hung_dao_05
+  character_id: tran_hung_dao
+  message: Xin chào Trần Hưng Đạo
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_trai_01
+  character_id: nguyen_trai
+  message: Nguyễn Trãi là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Ức Trai
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_trai_02
+  character_id: nguyen_trai
+  message: Hãy tóm tắt hành trình nổi bật của Nguyễn Trãi
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Ức Trai
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_trai_03
+  character_id: nguyen_trai
+  message: Câu chuyện về Nguyễn Trãi có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_trai_04
+  character_id: nguyen_trai
+  message: Món ăn yêu thích của Nguyễn Trãi là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_trai_05
+  character_id: nguyen_trai
+  message: Xin chào Nguyễn Trãi
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_thanh_thien_01
+  character_id: thanh_thien
+  message: Thánh Thiên là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Hai Bà Trưng
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_thanh_thien_02
+  character_id: thanh_thien
+  message: Hãy tóm tắt hành trình nổi bật của Thánh Thiên
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Hai Bà Trưng
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_thanh_thien_03
+  character_id: thanh_thien
+  message: Câu chuyện về Thánh Thiên có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_thanh_thien_04
+  character_id: thanh_thien
+  message: Món ăn yêu thích của Thánh Thiên là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_thanh_thien_05
+  character_id: thanh_thien
+  message: Xin chào Thánh Thiên
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_van_nga_01
+  character_id: duong_van_nga
+  message: Dương Vân Nga là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - nhà Đinh
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_van_nga_02
+  character_id: duong_van_nga
+  message: Hãy tóm tắt hành trình nổi bật của Dương Vân Nga
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - nhà Đinh
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_van_nga_03
+  character_id: duong_van_nga
+  message: Câu chuyện về Dương Vân Nga có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_van_nga_04
+  character_id: duong_van_nga
+  message: Món ăn yêu thích của Dương Vân Nga là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_duong_van_nga_05
+  character_id: duong_van_nga
+  message: Xin chào Dương Vân Nga
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_y_lan_01
+  character_id: y_lan
+  message: Ỷ Lan là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lý Nhân Tông
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_y_lan_02
+  character_id: y_lan
+  message: Hãy tóm tắt hành trình nổi bật của Ỷ Lan
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lý Nhân Tông
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_y_lan_03
+  character_id: y_lan
+  message: Câu chuyện về Ỷ Lan có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_y_lan_04
+  character_id: y_lan
+  message: Món ăn yêu thích của Ỷ Lan là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_y_lan_05
+  character_id: y_lan
+  message: Xin chào Ỷ Lan
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_thi_dung_01
+  character_id: tran_thi_dung
+  message: Trần Thị Dung là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Linh Từ quốc mẫu
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_thi_dung_02
+  character_id: tran_thi_dung
+  message: Hãy tóm tắt hành trình nổi bật của Trần Thị Dung
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Linh Từ quốc mẫu
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_thi_dung_03
+  character_id: tran_thi_dung
+  message: Câu chuyện về Trần Thị Dung có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_thi_dung_04
+  character_id: tran_thi_dung
+  message: Món ăn yêu thích của Trần Thị Dung là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_tran_thi_dung_05
+  character_id: tran_thi_dung
+  message: Xin chào Trần Thị Dung
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_chieu_hoang_01
+  character_id: ly_chieu_hoang
+  message: Lý Chiêu Hoàng là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1225'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_chieu_hoang_02
+  character_id: ly_chieu_hoang
+  message: Hãy tóm tắt hành trình nổi bật của Lý Chiêu Hoàng
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1225'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_chieu_hoang_03
+  character_id: ly_chieu_hoang
+  message: Câu chuyện về Lý Chiêu Hoàng có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_chieu_hoang_04
+  character_id: ly_chieu_hoang
+  message: Món ăn yêu thích của Lý Chiêu Hoàng là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ly_chieu_hoang_05
+  character_id: ly_chieu_hoang
+  message: Xin chào Lý Chiêu Hoàng
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_tu_01
+  character_id: an_tu
+  message: An Tư là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1285'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_tu_02
+  character_id: an_tu
+  message: Hãy tóm tắt hành trình nổi bật của An Tư
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - '1285'
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_tu_03
+  character_id: an_tu
+  message: Câu chuyện về An Tư có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_tu_04
+  character_id: an_tu
+  message: Món ăn yêu thích của An Tư là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_an_tu_05
+  character_id: an_tu
+  message: Xin chào An Tư
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_huyen_tran_01
+  character_id: huyen_tran
+  message: Huyền Trân là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Chế Mân
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_huyen_tran_02
+  character_id: huyen_tran
+  message: Hãy tóm tắt hành trình nổi bật của Huyền Trân
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Chế Mân
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_huyen_tran_03
+  character_id: huyen_tran
+  message: Câu chuyện về Huyền Trân có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_huyen_tran_04
+  character_id: huyen_tran
+  message: Món ăn yêu thích của Huyền Trân là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_huyen_tran_05
+  character_id: huyen_tran
+  message: Xin chào Huyền Trân
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_anh_01
+  character_id: nguyen_thi_anh
+  message: Nguyễn Thị Anh là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lê Nhân Tông
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_anh_02
+  character_id: nguyen_thi_anh
+  message: Hãy tóm tắt hành trình nổi bật của Nguyễn Thị Anh
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Lê Nhân Tông
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_anh_03
+  character_id: nguyen_thi_anh
+  message: Câu chuyện về Nguyễn Thị Anh có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_anh_04
+  character_id: nguyen_thi_anh
+  message: Món ăn yêu thích của Nguyễn Thị Anh là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_anh_05
+  character_id: nguyen_thi_anh
+  message: Xin chào Nguyễn Thị Anh
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_due_01
+  character_id: nguyen_thi_due
+  message: Nguyễn Thị Duệ là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Diệu Huyền
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_due_02
+  character_id: nguyen_thi_due
+  message: Hãy tóm tắt hành trình nổi bật của Nguyễn Thị Duệ
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Diệu Huyền
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_due_03
+  character_id: nguyen_thi_due
+  message: Câu chuyện về Nguyễn Thị Duệ có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa
+    chắc chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_due_04
+  character_id: nguyen_thi_due
+  message: Món ăn yêu thích của Nguyễn Thị Duệ là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_nguyen_thi_due_05
+  character_id: nguyen_thi_due
+  message: Xin chào Nguyễn Thị Duệ
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_doan_thi_diem_01
+  character_id: doan_thi_diem
+  message: Đoàn Thị Điểm là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Hồng Hà nữ sĩ
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_doan_thi_diem_02
+  character_id: doan_thi_diem
+  message: Hãy tóm tắt hành trình nổi bật của Đoàn Thị Điểm
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Hồng Hà nữ sĩ
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_doan_thi_diem_03
+  character_id: doan_thi_diem
+  message: Câu chuyện về Đoàn Thị Điểm có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_doan_thi_diem_04
+  character_id: doan_thi_diem
+  message: Món ăn yêu thích của Đoàn Thị Điểm là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_doan_thi_diem_05
+  character_id: doan_thi_diem
+  message: Xin chào Đoàn Thị Điểm
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ho_xuan_huong_01
+  character_id: ho_xuan_huong
+  message: Hồ Xuân Hương là ai?
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Bà chúa thơ Nôm
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ho_xuan_huong_02
+  character_id: ho_xuan_huong
+  message: Hãy tóm tắt hành trình nổi bật của Hồ Xuân Hương
+  category: docx_expansion
+  expected_behavior: grounded_factual
+  expected_topics:
+  - Bà chúa thơ Nôm
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ho_xuan_huong_03
+  character_id: ho_xuan_huong
+  message: Câu chuyện về Hồ Xuân Hương có điểm nào cần phân biệt với truyền thuyết hoặc tư liệu chưa chắc
+    chắn?
+  category: docx_expansion
+  expected_behavior: source_aware_uncertainty
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ho_xuan_huong_04
+  character_id: ho_xuan_huong
+  message: Món ăn yêu thích của Hồ Xuân Hương là gì?
+  category: docx_expansion
+  expected_behavior: do_not_invent_personal_fact
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
+- id: DOCX_ho_xuan_huong_05
+  character_id: ho_xuan_huong
+  message: Xin chào Hồ Xuân Hương
+  category: docx_expansion
+  expected_behavior: conversation
+  expected_topics: []
+  must_avoid:
+  - Không bịa dữ kiện đời tư.
