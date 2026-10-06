@@ -46,7 +46,7 @@ def create_app(settings: Settings | None = None, container: AppContainer | None 
         logger.info(
             "application_started environment=%s model=%s embedding_provider=%s log_file=%s",
             resolved.rag_app_env,
-            resolved.gemini_model,
+            resolved.llm_model,
             resolved.embedding_provider,
             log_path,
         )
@@ -131,7 +131,7 @@ def create_app(settings: Settings | None = None, container: AppContainer | None 
             service=resolved.app_name,
             database_ready=database_ready,
             corpus_ready=corpus_ready,
-            llm_model=resolved.gemini_model,
+            llm_model=resolved.llm_model,
             embedding_provider=resolved.embedding_provider,
             stt_configured=resolved.stt_configured,
         )

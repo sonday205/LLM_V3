@@ -3,7 +3,7 @@
 ## Mục đích
 
 Endpoint push-to-talk chuyển audio tiếng Việt thành văn bản. Nó không gửi câu
-hỏi tới Gemini. Người dùng được xem và sửa transcript trước khi gọi REST chat.
+hỏi tới LLM. Người dùng được xem và sửa transcript trước khi gọi REST chat.
 
 ```text
 ws://127.0.0.1:8005/v1/characters/{character_id}/voice

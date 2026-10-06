@@ -11,7 +11,7 @@ HTTP request
   -> RetrievalPolicy: bỏ qua lịch sử cho lượt thuần memory/hội thoại
   -> HybridRetriever: exact pgvector + PostgreSQL full-text + RRF
   -> PromptBuilder: persona data + evidence scope + answer-mode contract
-  -> Gemini 3.5 Flash-Lite (one request, no retry)
+  -> OpenRouterProvider -> OpenRouter (one HTTP request, ordered models fallback)
   -> raw answer returned to client
   -> StorageGuard only decides whether the turn is persisted
 ```
@@ -33,14 +33,14 @@ Browser microphone
   -> POST /chat chỉ khi người dùng chủ động bấm gửi
 ```
 
-OpenAI key chỉ tồn tại ở backend. STT không truy cập RAG, memory hay Gemini và
+OpenAI key chỉ tồn tại ở backend. STT không truy cập RAG, memory hay LLM và
 không tự động lưu audio/transcript. Chuẩn hóa transcript chỉ xử lý Unicode và
 khoảng trắng, không hard-code tên một nhân vật cụ thể.
 
 ## Ranh giới an toàn
 
-Hai precheck có quyền trả câu trả lời cục bộ và dừng trước Gemini. Output của
-Gemini không bị sửa. Storage guard chạy sau generation nhưng chỉ tác động tới
+Hai precheck có quyền trả câu trả lời cục bộ và dừng trước LLM. Output của
+LLM không bị sửa. Storage guard chạy sau generation nhưng chỉ tác động tới
 việc ghi memory, không tác động response.
 
 Memory được phân vùng theo `client_scope + character_id + session_id`. Khi auth

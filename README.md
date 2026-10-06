@@ -2,12 +2,12 @@
 
 API độc lập để thử nghiệm chất lượng hội thoại nhân vật lịch sử với:
 
-- 47 mục nhân vật và corpus có nguồn, đủ 44 mục trong danh sách Word yêu cầu.
+- 48 mục nhân vật và corpus có nguồn, đủ 44 mục trong danh sách Word yêu cầu.
 - PostgreSQL + pgvector hybrid RAG, không dùng Neo4j/GraphRAG.
 - Memory bền vững, TTL 7 ngày, truy hồi theo gần đây và ngữ nghĩa.
 - Hai precheck local: safety và privacy.
-- Một request Gemini `gemini-3.5-flash-lite` cho mỗi chat hợp lệ.
-- Output Gemini được trả nguyên; storage guard chỉ quyết định có lưu memory.
+- Một HTTP request OpenRouter với explicit model fallback cho mỗi chat hợp lệ.
+- Output LLM được trả nguyên; storage guard chỉ quyết định có lưu memory.
 - Persona và ranh giới suy ngẫm được cấu hình bằng data, không hard-code nhân vật.
 - Phân biệt tư liệu trực tiếp với bối cảnh chung để trả lời gần gũi mà không bịa đời tư.
 - Push-to-talk STT tiếng Việt qua OpenAI Realtime WebSocket, transcript được kiểm tra trước khi gửi chat.
@@ -21,13 +21,89 @@ File `.env` local đã được ignore. Để cấu hình mới từ đầu:
 cp .env.example .env
 ```
 
-Điền `GEMINI_API_KEY`. Nếu dùng microphone, điền thêm `OPENAI_API_KEY`, sau đó chạy:
+Điền `OPENROUTER_API_KEY` và đặt `LLM_PROVIDER=openrouter`. Nếu dùng microphone,
+điền thêm `OPENAI_API_KEY`, sau đó chạy:
 
 ```bash
 docker compose up -d --build
 docker compose ps
 curl http://127.0.0.1:8005/ready
 ```
+
+## Cấu hình OpenRouter
+
+Luồng: `ChatService -> gateway.generate(prompt) -> OpenRouterProvider -> OpenRouter`.
+Model chỉ nằm trong cấu hình, không nằm trong business logic. Không dùng
+`openrouter/free`, không retry hoặc gọi tuần tự từng model trong ứng dụng.
+
+### Dùng model miễn phí
+
+```dotenv
+LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=YOUR_OPENROUTER_KEY
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_MODELS=nvidia/nemotron-3-ultra-550b-a55b:free,google/gemma-4-31b-it:free,google/gemma-4-26b-a4b-it:free
+OPENROUTER_TIMEOUT_SECONDS=30
+OPENROUTER_MAX_TOKENS=700
+OPENROUTER_REASONING_EFFORT=none
+OPENROUTER_HTTP_REFERER=
+OPENROUTER_APP_NAME=
+```
+
+Cả ba model có text input/output và giá token bằng 0 trong catalog kiểm tra ngày
+2026-10-06. Thứ tự giữ theo lựa chọn ban đầu: Nemotron Ultra, Gemma 31B, Gemma
+26B. Đây chưa phải xếp hạng chất lượng tiếng Việt đã benchmark. Model free vẫn
+có giới hạn quota và có thể thay đổi khả dụng; kiểm tra lại
+[catalog OpenRouter](https://openrouter.ai/api/v1/models) khi cấu hình.
+
+`.env` cũ: thay `LLM_PROVIDER=gemini` bằng `openrouter`, thêm các biến trên và bỏ
+`GEMINI_API_KEY`, `GEMINI_MODEL`, `GEMINI_TIMEOUT_SECONDS`. Không ghi key vào Git.
+Thiếu key hoặc danh sách model rỗng sẽ khiến API dừng ngay khi startup, trước khi
+khởi tạo database/embedding. Migration và ingest dữ liệu không cần key LLM.
+`LLM_PROVIDER=mock` vẫn được giữ để demo/test offline.
+
+### Chuyển sang model trả phí
+
+Chỉ thay danh sách bằng model ID hợp lệ trong catalog, ví dụ:
+
+```dotenv
+OPENROUTER_MODELS=deepseek/deepseek-v3.2,openai/gpt-6-luna
+```
+
+Thứ tự ưu tiên chính là thứ tự sau khi tách dấu phẩy và bỏ khoảng trắng/mục rỗng.
+Restart API hoặc chạy `docker compose up -d --build --force-recreate api` để nạp
+cấu hình mới. Không sửa business logic. Nếu model cần reasoning, có thể chỉnh
+`OPENROUTER_REASONING_EFFORT` và `OPENROUTER_MAX_TOKENS` bằng env.
+
+### Fallback hoạt động thế nào
+
+Một request chứa `models: [primary, fallback_1, fallback_2]`. OpenRouter thử model
+đầu, rồi model tiếp theo nếu không phục vụ được do lỗi/khả dụng, chẳng hạn rate
+limit, downtime hoặc moderation. Fallback không phải retry vô hạn và không sửa
+câu trả lời sai hoặc bị cắt ngắn nhưng đã trả thành công. Xem
+[tài liệu fallback](https://openrouter.ai/docs/guides/routing/model-fallbacks).
+
+`provider_call_count=1` đếm HTTP generation call từ ứng dụng tới OpenRouter;
+không đếm số lần thử nội bộ của OpenRouter. Response chat và log ghi model thực
+sự phục vụ từ trường `model`; `/health.llm_model` là model ưu tiên cấu hình.
+Lỗi upstream vẫn trả HTTP 503 theo hợp đồng cũ, với mã an toàn phân biệt auth,
+credits, rate limit, model unavailable, timeout, network và response không hợp lệ.
+
+### Khác biệt với Gemini trực tiếp
+
+Prompt, memory, RAG và output text được giữ nguyên; không có streaming LLM,
+structured output, tool calling hay image input trong luồng chat hiện tại.
+STT OpenAI Realtime độc lập và giữ nguyên.
+
+Gemini cũ dùng `thinkingLevel=minimal`. Nemotron free chỉ công bố effort
+`medium/high`; mặc định mới dùng `reasoning.enabled=false`, `exclude=true` để
+phù hợp trả lời ngắn và không trả reasoning cho người dùng. Có thể chọn
+`minimal/low/medium/high` qua env nếu model hỗ trợ. Model bắt buộc reasoning có
+thể không tắt được. `max_tokens=700` có thể tính cả reasoning trên OpenRouter;
+nếu bật reasoning cần tăng ngân sách. Xem
+[tài liệu reasoning](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+Chất lượng nhập vai, tiếng Việt và độ trễ cần đo live với key của bạn; unit test
+mock không chứng minh chất lượng của model.
 
 ## Log và debug
 
@@ -67,7 +143,7 @@ docker compose up -d --build --force-recreate api
 - ReDoc: http://127.0.0.1:8005/redoc
 - OpenAPI JSON: http://127.0.0.1:8005/openapi.json
 
-Danh sách 47 mục nhân vật và ID: [CHARACTERS.md](CHARACTERS.md).
+Danh sách 48 mục nhân vật và ID: [CHARACTERS.md](CHARACTERS.md).
 Đối chiếu file Word và cách nạp dữ liệu mới: [docs/CHARACTER_EXPANSION.md](docs/CHARACTER_EXPANSION.md).
 
 Lần chạy đầu cần tải model embedding `BAAI/bge-m3`, vì vậy service `ingest` có
@@ -80,6 +156,20 @@ vô tình kéo CUDA runtime):
 ```bash
 python -m pip install -r requirements.txt -r requirements-embedding-cpu.txt
 ```
+
+## Nạp bổ sung nhân vật
+
+Để chỉ nạp nhân vật chưa có trong PostgreSQL, giữ nguyên dữ liệu của các nhân vật
+đã tồn tại:
+
+```bash
+docker compose run --rm --no-deps ingest python -m scripts.ingest --missing-only
+```
+
+Bỏ `--missing-only` nếu muốn cập nhật lại toàn bộ corpus từ file hiện tại.
+Sau khi thêm profile hoặc đổi code, rebuild/recreate API để nạp danh sách mới.
+Readiness kiểm tra các ID profile trong corpus hiện tại có trong database và mỗi
+nhân vật đã đăng ký có ít nhất một chunk; không còn phụ thuộc số lượng cố định.
 
 ## API chính
 
@@ -112,7 +202,7 @@ Khi `API_AUTH_ENABLED=true`, thêm header `X-API-Key`. Frontend chỉ giữ key 
 STT giữ nguyên cách hoạt động của bản LLM_v4 trước: browser gửi audio PCM16 mono
 24 kHz qua WebSocket tới API; API chuyển tiếp tới OpenAI Realtime transcription.
 Transcript được đặt vào ô nhập để người dùng kiểm tra hoặc sửa trước khi bấm gửi,
-vì vậy STT không tự gọi Gemini và không làm tăng `provider_call_count` của chat.
+vì vậy STT không tự gọi LLM và không làm tăng `provider_call_count` của chat.
 
 Cấu hình trong `.env`:
 
@@ -187,3 +277,36 @@ python -m scripts.evaluate \
 ```
 
 Xem thêm [kiến trúc](docs/ARCHITECTURE.md) và [OpenAPI](docs/openapi.yaml).
+
+## Cập nhật mapping 015–019 (2026-10-07)
+
+Giữ nguyên 001–014. Mapping mới:
+`pham_ngoc_thao → 015`, `vu_ngoc_nha → 016`, `dang_tran_duc → 017`,
+`pham_xuan_an → 018`, `le_duc_thuy → 019`.
+019 là Lê Đức Thúy, nguyên Thống đốc Ngân hàng Nhà nước, theo
+[Wikipedia người dùng cung cấp](https://vi.wikipedia.org/wiki/L%C3%AA_%C4%90%E1%BB%A9c_Th%C3%BAy).
+Không gán quân hàm Thiếu tướng; không dùng hồ sơ Lê Hữu Thúy cho 019. Lê Hữu Thúy giữ mã 020; Lý Tự Trọng
+chuyển sang 048 để không trùng 015. Các mã 021–047 giữ nguyên.
+ID API vẫn là slug; mã ba chữ số dùng cho voice/image.
+
+Orchestrator hỗ trợ các biến `<CHARACTER_ID>_VOICE_ID`, `_IMAGE_ID`, `_IMAGE_PATH`
+cho năm nhân vật trên, gồm `LE_DUC_THUY_*` cho 019.
+Trên SSH, đặt ảnh thật trong LipSync và `voice_data/<id>/ref.txt` cùng audio mẫu
+trong TTS theo mapping này. Có thể dùng `<CHARACTER_ID>_IMAGE_HOST_PATH` để mount
+ảnh vào orchestrator; kiểm tra `CHARACTER_OVERRIDES_JSON` tránh override cũ.
+
+Sau khi cập nhật source, trong repo LLM chạy:
+
+```bash
+docker compose build
+docker compose run --rm ingest
+docker compose up -d api
+```
+
+Phải ingest lại, không dùng `--missing-only`, để cập nhật nhân vật đã có trong DB.
+Sau đó trong repo orchestrator:
+
+```bash
+docker compose up -d --build orchestrator
+curl --fail http://127.0.0.1:8991/api/v1/characters
+```

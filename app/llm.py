@@ -26,65 +26,116 @@ class LLMResult:
     provider_call_count: int = 1
 
 
-class GeminiGateway:
-    """Một request provider cho mỗi lần generate; không router/reviewer/retry."""
+class OpenRouterProvider:
+    """Một HTTP request; OpenRouter xử lý fallback theo thứ tự models."""
 
     def __init__(self, settings: Settings, client: httpx.AsyncClient | None = None) -> None:
-        if not settings.gemini_api_key:
-            raise ValueError("GEMINI_API_KEY is required for LLM_PROVIDER=gemini")
+        settings.validate_llm()
         self.settings = settings
+        self.models = settings.llm_models
         self._owns_client = client is None
-        self.client = client or httpx.AsyncClient(timeout=settings.gemini_timeout_seconds)
+        self.client = client or httpx.AsyncClient(timeout=settings.openrouter_timeout_seconds)
+        logger.info("ai_provider=openrouter requested_models=%s", self.models)
+
+    @staticmethod
+    def _error_for_status(status_code: int) -> str:
+        if status_code in {401, 403}:
+            return "openrouter_authentication_error"
+        if status_code == 402:
+            return "openrouter_insufficient_credits"
+        if status_code == 429:
+            return "openrouter_rate_limit"
+        if status_code in {502, 503}:
+            return "openrouter_models_unavailable"
+        if status_code in {408, 504}:
+            return "openrouter_timeout"
+        return f"openrouter_http_{status_code}"
 
     async def generate(self, prompt: str) -> LLMResult:
         started = time.perf_counter()
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.settings.gemini_model}:generateContent"
+        key = self.settings.openrouter_api_key
+        assert key is not None  # Đã kiểm tra bởi validate_llm khi khởi tạo provider.
+        headers = {"Authorization": f"Bearer {key.get_secret_value().strip()}"}
+        if self.settings.openrouter_http_referer:
+            headers["HTTP-Referer"] = self.settings.openrouter_http_referer
+        if self.settings.openrouter_app_name:
+            headers["X-OpenRouter-Title"] = self.settings.openrouter_app_name
+        effort = self.settings.openrouter_reasoning_effort
+        reasoning: dict[str, str | bool] = (
+            {"enabled": False, "exclude": True}
+            if effort == "none"
+            else {"effort": effort, "exclude": True}
+        )
         try:
             response = await self.client.post(
-                url,
-                headers={"x-goog-api-key": self.settings.gemini_api_key},
+                f"{self.settings.openrouter_base_url.rstrip('/')}/chat/completions",
+                headers=headers,
+                timeout=self.settings.openrouter_timeout_seconds,
                 json={
-                    "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                    "generationConfig": {
-                        "maxOutputTokens": 700,
-                        "thinkingConfig": {"thinkingLevel": "minimal"},
-                    },
+                    "models": self.models,
+                    # Giữ nguyên prompt gồm persona, memory, context và question.
+                    "messages": [{"role": "user", "content": prompt}],
+                    "stream": False,
+                    "max_tokens": self.settings.openrouter_max_tokens,
+                    "reasoning": reasoning,
                 },
             )
             response.raise_for_status()
             payload = response.json()
-            parts = payload["candidates"][0]["content"]["parts"]
-            answer = "\n".join(str(part.get("text", "")) for part in parts)
+            if "error" in payload:
+                code = payload["error"].get("code")
+                error = (
+                    self._error_for_status(code)
+                    if isinstance(code, int)
+                    else "openrouter_provider_error"
+                )
+                raise LLMUnavailableError(error)
+            choice = payload["choices"][0]
+            answer = choice["message"]["content"]
+            if not isinstance(answer, str):
+                raise LLMUnavailableError("openrouter_malformed_response")
             if not answer.strip():
-                raise LLMUnavailableError("gemini_empty_text")
-            usage = payload.get("usageMetadata") or {}
+                error = (
+                    "openrouter_output_limit"
+                    if choice.get("finish_reason") == "length"
+                    else "openrouter_empty_text"
+                )
+                raise LLMUnavailableError(error)
+            model = payload["model"]
+            if not isinstance(model, str) or not model.strip():
+                raise LLMUnavailableError("openrouter_malformed_response")
+            usage = payload.get("usage") or {}
+            for name in ("prompt_tokens", "completion_tokens"):
+                count = usage.get(name)
+                if count is not None and (type(count) is not int or count < 0):
+                    raise LLMUnavailableError("openrouter_malformed_response")
+            latency_ms = int((time.perf_counter() - started) * 1000)
+            logger.info("ai_provider=openrouter served_model=%s latency_ms=%d", model, latency_ms)
             return LLMResult(
                 text=answer,
-                provider="gemini",
-                model=self.settings.gemini_model,
-                latency_ms=int((time.perf_counter() - started) * 1000),
-                input_tokens=usage.get("promptTokenCount"),
-                output_tokens=usage.get("candidatesTokenCount"),
+                provider="openrouter",
+                model=model,
+                latency_ms=latency_ms,
+                input_tokens=usage.get("prompt_tokens"),
+                output_tokens=usage.get("completion_tokens"),
             )
         except httpx.HTTPStatusError as exc:
-            status_code = exc.response.status_code
-            logger.warning(
-                "gemini_http_error model=%s status_code=%d latency_ms=%d",
-                self.settings.gemini_model,
-                status_code,
-                int((time.perf_counter() - started) * 1000),
-            )
-            raise LLMUnavailableError(f"gemini_http_{status_code}") from exc
-        except httpx.TimeoutException as exc:
-            logger.warning("gemini_timeout model=%s", self.settings.gemini_model)
-            raise LLMUnavailableError("gemini_timeout") from exc
-        except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as exc:
-            logger.warning(
-                "gemini_error model=%s error_type=%s",
-                self.settings.gemini_model,
-                type(exc).__name__,
-            )
-            raise LLMUnavailableError(type(exc).__name__) from exc
+            error = self._error_for_status(exc.response.status_code)
+        except httpx.TimeoutException:
+            error = "openrouter_timeout"
+        except httpx.HTTPError:
+            error = "openrouter_network_error"
+        except LLMUnavailableError as exc:
+            error = str(exc)
+        except (KeyError, IndexError, TypeError, ValueError, AttributeError):
+            error = "openrouter_malformed_response"
+        logger.warning(
+            "ai_provider=openrouter error=%s latency_ms=%d",
+            error,
+            int((time.perf_counter() - started) * 1000),
+        )
+        # Không nối exception upstream có thể chứa URL, credential hoặc body.
+        raise LLMUnavailableError(error) from None
 
     async def close(self) -> None:
         if self._owns_client:
@@ -108,6 +159,6 @@ class MockGateway:
 def build_gateway(settings: Settings):
     if settings.llm_provider == "mock":
         return MockGateway()
-    if settings.llm_provider == "gemini":
-        return GeminiGateway(settings)
-    raise ValueError(f"Unsupported LLM_PROVIDER: {settings.llm_provider}")
+    if settings.llm_provider == "openrouter":
+        return OpenRouterProvider(settings)
+    raise ValueError("Unsupported LLM_PROVIDER; use openrouter or mock")

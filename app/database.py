@@ -13,12 +13,11 @@ from app.domain import CharacterProfile
 from app.embeddings import vector_literal
 from app.knowledge import KnowledgeDocument
 
-EXPECTED_CHARACTER_COUNT = 14
-
 
 class Database:
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, expected_character_ids: Sequence[str] = ()) -> None:
         self.engine: AsyncEngine = create_async_engine(url, pool_pre_ping=True)
+        self.expected_character_ids = frozenset(expected_character_ids)
 
     async def close(self) -> None:
         await self.engine.dispose()
@@ -33,22 +32,24 @@ class Database:
     async def ready(self) -> bool:
         try:
             async with self.engine.connect() as connection:
-                row = (
+                rows = (
                     (
                         await connection.execute(
                             text(
-                                """SELECT count(DISTINCT character_id) AS character_count,
-                                      count(*) AS chunk_count
-                               FROM knowledge_chunks"""
+                                """SELECT c.id, count(k.id) AS chunk_count
+                                   FROM characters c
+                                   LEFT JOIN knowledge_chunks k ON k.character_id=c.id
+                                   GROUP BY c.id"""
                             )
                         )
                     )
                     .mappings()
-                    .one()
+                    .all()
                 )
                 return (
-                    int(row["character_count"]) == EXPECTED_CHARACTER_COUNT
-                    and int(row["chunk_count"]) > 0
+                    bool(rows)
+                    and self.expected_character_ids.issubset({row["id"] for row in rows})
+                    and all(int(row["chunk_count"]) > 0 for row in rows)
                 )
         except Exception:
             return False

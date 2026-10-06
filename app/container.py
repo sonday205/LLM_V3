@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from app.config import Settings
 from app.database import Database
 from app.embeddings import build_embedding_provider
+from app.knowledge import KnowledgeLoader
 from app.llm import build_gateway
 from app.memory import SafeMemoryService
 from app.prompt import PromptBuilder
@@ -26,7 +27,9 @@ class AppContainer:
 
 
 def build_container(settings: Settings) -> AppContainer:
-    database = Database(settings.database_url)
+    settings.validate_llm()
+    profiles = KnowledgeLoader().load_profiles(settings.data_dir)
+    database = Database(settings.database_url, [profile.id for profile in profiles])
     embeddings = build_embedding_provider(
         settings.embedding_provider,
         settings.embedding_model,

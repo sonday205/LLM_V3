@@ -54,3 +54,7 @@ identity_corrections:
     verified_name: Đại tá Lê Hữu Thúy
     reason: Tác giả Điệp viên giữa sa mạc lửa, bút danh Nhị Hồ.
     source_url: https://ct.qdnd.vn/van-hoa-xa-hoi/pham-gia-4-dac-biet-530938
+
+# Hồ sơ độc lập bổ sung từ URL người dùng cung cấp; không phải alias Lê Hữu Thúy.
+additional_character_ids:
+  - le_duc_thuy

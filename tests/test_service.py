@@ -50,7 +50,7 @@ class CountingGateway:
 
     async def generate(self, prompt):
         self.calls += 1
-        return LLMResult("Câu trả lời nguyên bản.", "gemini", "gemini-3.5-flash-lite", 10)
+        return LLMResult("Câu trả lời nguyên bản.", "openrouter", "served-model", 10)
 
 
 def build_service():
@@ -123,3 +123,56 @@ def test_prompt_does_not_push_unsolicited_ai_self_introduction() -> None:
     )
     assert "Hồ sơ: dựa trên tư liệu về Tô Vĩnh Diện." in prompt
     assert "Bạn là phiên bản AI" not in prompt
+
+
+async def test_chat_uses_openrouter_and_preserves_memory_prompt(monkeypatch) -> None:
+    import json
+
+    import httpx
+
+    from app.llm import OpenRouterProvider
+
+    service, memory, _ = build_service()
+    context = MemoryContext(
+        facts={"name": "Sơn"},
+        recent_turns=(("Cháu tên Sơn", "Chú đã nhớ tên cháu."),),
+    )
+
+    async def memory_context(*args):
+        return "session-pk", context
+
+    monkeypatch.setattr(memory, "context", memory_context)
+    message = "Cháu tên là gì?"
+    expected_prompt = service.prompt_builder.build(
+        PROFILE, message, context, RetrievalResult("not_used")
+    )
+    requests = []
+
+    def handle(request):
+        requests.append(request)
+        body = json.loads(request.content)
+        assert body["messages"] == [{"role": "user", "content": expected_prompt}]
+        return httpx.Response(
+            200,
+            json={
+                "model": "served-fallback:free",
+                "choices": [{"message": {"content": "Cháu tên Sơn."}}],
+            },
+        )
+
+    configured = Settings(_env_file=None, llm_provider="openrouter", openrouter_api_key="test-key")
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handle)) as client:
+        service.gateway = OpenRouterProvider(configured, client)
+        response = await service.chat(
+            PROFILE.id,
+            ChatRequest(session_id="test-session-001", message=message),
+            "client-a",
+        )
+    assert len(requests) == 1
+    assert response.answer == "Cháu tên Sơn."
+    assert response.provider == "openrouter"
+    assert response.model == "served-fallback:free"
+    assert response.memory_used
+    assert response.provider_call_count == 1
+    assert not response.degraded
+    assert memory.stored == [("session-pk", message, "Cháu tên Sơn.")]

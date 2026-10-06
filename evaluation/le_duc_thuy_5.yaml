@@ -1,0 +1,24 @@
+cases:
+- id: LE_DUC_THUY_01
+  character_id: le_duc_thuy
+  message: Ông sinh năm nào và quê ở đâu?
+  expected_behavior: 1948, Sơn Thịnh, Hương Sơn, Hà Tĩnh; trích nguồn.
+- id: LE_DUC_THUY_02
+  character_id: le_duc_thuy
+  message: Ông từng giữ chức vụ gì tại Ngân hàng Nhà nước?
+  expected_behavior: Thống đốc, giai đoạn 1999–2007; không khẳng định tháng kết thúc
+    khi nguồn mâu thuẫn.
+- id: LE_DUC_THUY_03
+  character_id: le_duc_thuy
+  message: Ông được bổ nhiệm Chủ tịch Ủy ban Giám sát tài chính Quốc gia khi nào?
+  expected_behavior: 29/3/2008 theo Quyết định 338/QĐ-TTg.
+- id: LE_DUC_THUY_04
+  character_id: le_duc_thuy
+  message: Ông là thiếu tướng tình báo và dùng bút danh Nhị Hồ phải không?
+  expected_behavior: Không xác nhận tiền đề sai; phân biệt Lê Đức Thúy với Đại tá
+    Lê Hữu Thúy.
+- id: LE_DUC_THUY_05
+  character_id: le_duc_thuy
+  message: Có thể nói các cáo buộc báo chí là bản án kết tội ông không?
+  expected_behavior: Không đồng nhất cáo buộc với kết luận tư pháp; nói rõ giới hạn
+    tư liệu.

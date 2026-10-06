@@ -58,3 +58,21 @@ def test_safe_http_path_hides_session_id() -> None:
     assert safe_http_path({"route": route}, raw_path) == route.path
     assert safe_http_path({}, raw_path).endswith("/sessions/{session_id}")
     assert "private-session-123" not in safe_http_path({}, raw_path)
+
+
+def test_formatter_redacts_openrouter_key() -> None:
+    formatter = RedactingFormatter("%(message)s")
+    record = logging.LogRecord(
+        "test",
+        logging.INFO,
+        __file__,
+        1,
+        "OPENROUTER_API_KEY=config-secret sk-or-v1-fake-token Authorization=Bearer bearer-secret",
+        (),
+        None,
+    )
+    rendered = formatter.format(record)
+    assert "config-secret" not in rendered
+    assert "fake-token" not in rendered
+    assert "bearer-secret" not in rendered
+    assert rendered.count("[REDACTED]") == 3

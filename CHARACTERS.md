@@ -1,4 +1,4 @@
-# Danh sách nhân vật
+# Danh sách 48 nhân vật
 
 | STT | ID | Nhân vật |
 |---:|---|---|
@@ -16,11 +16,11 @@
 | 12 | `ngo_quyen` | Ngô Quyền |
 | 13 | `quang_trung_nguyen_hue` | Quang Trung - Nguyễn Huệ |
 | 14 | `le_loi` | Lê Lợi |
-| 15 | `ly_tu_trong` | Lý Tự Trọng |
-| 16 | `pham_ngoc_thao` | Phạm Ngọc Thảo |
-| 17 | `vu_ngoc_nha` | Vũ Ngọc Nhạ |
-| 18 | `dang_tran_duc` | Đặng Trần Đức |
-| 19 | `pham_xuan_an` | Phạm Xuân Ẩn |
+| 15 | `pham_ngoc_thao` | Phạm Ngọc Thảo |
+| 16 | `vu_ngoc_nha` | Vũ Ngọc Nhạ |
+| 17 | `dang_tran_duc` | Đặng Trần Đức |
+| 18 | `pham_xuan_an` | Phạm Xuân Ẩn |
+| 19 | `le_duc_thuy` | Lê Đức Thúy |
 | 20 | `le_huu_thuy` | Lê Hữu Thúy |
 | 21 | `hung_vuong` | Hùng Vương |
 | 22 | `an_duong_vuong` | An Dương Vương |
@@ -49,11 +49,10 @@
 | 45 | `nguyen_thi_due` | Nguyễn Thị Duệ |
 | 46 | `doan_thi_diem` | Đoàn Thị Điểm |
 | 47 | `ho_xuan_huong` | Hồ Xuân Hương |
+| 48 | `ly_tu_trong` | Lý Tự Trọng |
 
-Tổng cộng 47 mục: đủ 44 mục trong file Word và giữ 3 nhân vật đã có ngoài danh sách.
+Giữ 001–014, nhóm mới dùng 015–019. Lê Hữu Thúy giữ 020, Lý Tự Trọng dùng 048.
+Lê Đức Thúy (`le_duc_thuy`) là hồ sơ riêng về nguyên Thống đốc Ngân hàng Nhà nước;
+Lê Hữu Thúy (`le_huu_thuy`) là Đại tá tình báo, không phải alias của nhau.
 
-Hùng Vương là danh xưng nhiều đời vua; Hai Bà Trưng gồm Trưng Trắc và Trưng Nhị.
-Mục Lê Đức Thúy trong Word được đối chiếu thành Lê Hữu Thúy (`le_huu_thuy`).
-Quang Trung tiếp tục dùng ID `quang_trung_nguyen_hue`, không tạo nhân vật trùng.
-
-Danh sách API được cung cấp qua `GET /v1/characters` sau khi ingest dữ liệu.
+API `GET /v1/characters` dùng dữ liệu trong DB, cần ingest sau khi cập nhật source.

@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -29,10 +30,18 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://historical:historical@localhost:5433/historical_rag"
     data_dir: Path = PROJECT_ROOT / "data" / "characters"
 
-    llm_provider: str = "gemini"
-    gemini_api_key: str | None = None
-    gemini_model: str = "gemini-3.5-flash-lite"
-    gemini_timeout_seconds: float = 30.0
+    llm_provider: str = "openrouter"
+    openrouter_api_key: SecretStr | None = None
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_models: str = (
+        "nvidia/nemotron-3-ultra-550b-a55b:free,"
+        "google/gemma-4-31b-it:free,google/gemma-4-26b-a4b-it:free"
+    )
+    openrouter_timeout_seconds: float = Field(default=30.0, gt=0)
+    openrouter_max_tokens: int = Field(default=700, gt=0)
+    openrouter_reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] = "none"
+    openrouter_http_referer: str = ""
+    openrouter_app_name: str = ""
 
     openai_api_key: str | None = None
     openai_realtime_model: str = "gpt-realtime-whisper"
@@ -55,6 +64,25 @@ class Settings(BaseSettings):
     @classmethod
     def normalize_provider(cls, value: object) -> str:
         return str(value).strip().lower()
+
+    @property
+    def llm_models(self) -> list[str]:
+        return [item.strip() for item in self.openrouter_models.split(",") if item.strip()]
+
+    @property
+    def llm_model(self) -> str:
+        return "mock" if self.llm_provider == "mock" else next(iter(self.llm_models), "")
+
+    def validate_llm(self) -> None:
+        # Kiểm tra khi khởi động API; scripts ingest/migration không cần key LLM.
+        if self.llm_provider == "mock":
+            return
+        if self.llm_provider != "openrouter":
+            raise ValueError("Unsupported LLM_PROVIDER; use openrouter or mock")
+        if not self.openrouter_api_key or not self.openrouter_api_key.get_secret_value().strip():
+            raise ValueError("OPENROUTER_API_KEY is required for LLM_PROVIDER=openrouter")
+        if not self.llm_models:
+            raise ValueError("OPENROUTER_MODELS must contain at least one model")
 
     @property
     def api_keys(self) -> tuple[str, ...]:

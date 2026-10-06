@@ -12,7 +12,7 @@ from app.config import Settings
 _SENSITIVE_PATTERNS = (
     (
         re.compile(
-            r"(?i)((?:GEMINI_API_KEY|OPENAI_API_KEY|APP_API_KEYS|x-goog-api-key)[\"']?"
+            r"(?i)((?:GEMINI_API_KEY|OPENROUTER_API_KEY|OPENAI_API_KEY|APP_API_KEYS|x-goog-api-key)[\"']?"
             r"\s*[=:]\s*[\"']?)[^\s,;\"'}]+"
         ),
         r"\1[REDACTED]",
@@ -22,6 +22,7 @@ _SENSITIVE_PATTERNS = (
         r"\1[REDACTED]",
     ),
     (re.compile(r"\bAIza[0-9A-Za-z_-]{20,}\b"), "[REDACTED]"),
+    (re.compile(r"\bsk-or-v1-[0-9A-Za-z_-]+\b"), "[REDACTED]"),
 )
 _SESSION_PATH = re.compile(r"(/sessions/)[^/?#]+")
 
